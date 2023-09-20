@@ -1,0 +1,63 @@
+.titre-principal {
+    text-align: center;
+    font-family: "Trebuchet ms",verdana,sans-serif;
+    font-size: 3.25em;
+    letter-spacing: 1.2px;
+    font-variant: small-caps;
+    font-weight: 700;
+    margin-top: .1em;
+    text-shadow: 3px 2px 1px rgba(29, 233, 182, .8);
+    color: #ffffffe3;
+}
+@media all and (max-width: 750px) {
+    .titre-principal {
+        font-size: 2em
+    }
+}
+
+.menu-box-avatar img {
+    width: 7em;
+    height: 7em;
+    border: 5px solid #eee;
+    padding: 5px;
+    margin: .5em
+}
+
+.menu-box-avatar h2 {
+    font-family: 'Times new roman',calibri,sans-serif;
+}
+.menu-box-avatar h2 span {
+    font-size: .7em;
+    font-family: Lato,'Trebuchet MS',candara,'Arial Narrow',serif;
+}
+
+@media all and (max-width: 750px) {
+    .menu-box-avatar img {
+        width: 3.5em;
+        height: 3.5em;
+        border-width: 2.5px;
+        margin: 0 .5em
+    }
+}
+
+footer {
+    z-index: 1030;
+    right: 0 !important;
+    left: auto !important;
+    width: calc(100% - 19.6%);
+    padding: .5%;
+    text-align: center;
+    font: 1em sans-serif;
+    box-shadow: 0 -2px 3px #ccc;
+}
+
+
+.htmx-indicator {
+    display: none;
+}
+.htmx-request .htmx-indicator {
+    display: inline-block;
+}
+.htmx-request #response {
+    display: none;
+}

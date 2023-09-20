@@ -1,0 +1,43 @@
+#!/usr/bin/env php
+<?php
+/**
+ * This file is part of Blitz PHP framework.
+ *
+ * (c) 2022 Dimitri Sitchet Tomkeu <devcode.dst@gmail.com>
+ *
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ */
+
+/*
+ * ------------------------------------------------- -------------------
+ * Outils de ligne de commande BlitzPHP
+ * ------------------------------------------------- -------------------
+ * Le principal point d'entrée dans le système CLI et vous permet d'exécuter
+ * commandes et effectuer la maintenance de votre application.
+ */
+
+// Refuse de s'exécuter lorsqu'il est appelé depuis php-cgi
+if (strpos(PHP_SAPI, 'cgi') === 0) {
+    exit("The cli tool is not supported when running php-cgi. It needs php-cli to function!\n\n");
+}
+
+// Nous voulons que les erreurs soient affichées lors de son utilisation à partir de la CLI.
+error_reporting(-1);
+ini_set('display_errors', '1');
+
+/**
+ * @var bool
+ */
+define('KLINGED', true);
+
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'index.php';
+
+// Afficher les informations de base avant de faire quoi que ce soit d'autre.
+if (is_int($suppress = array_search('--no-header', $_SERVER['argv'], true))) {
+    unset($_SERVER['argv'][$suppress]); // @codeCoverageIgnore
+    $suppress = true;
+}
+$console = new \BlitzPHP\Cli\Console\Console($suppress);
+
+$console->handle($_SERVER['argv']);
