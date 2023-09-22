@@ -1,5 +1,6 @@
 <?php
 
+use App\Entities\Notification;
 use App\MS\Constants;
 
 /**
@@ -27,4 +28,40 @@ function to_cfa($montant, string $moment = 'sortie')
 function simple_tel(string $tel): string
 {
     return str_replace(['237', '.', ' ', '-', ',', '_', '+'], '', htmlspecialchars($tel));
+}
+
+function hello() 
+{
+	$heure = date("H");
+    
+	if ($heure >= 4 AND $heure <= 6) {
+      echo 'Bon reveil !';
+    }
+	else if ($heure >= 7 AND $heure <= 12) {
+      echo 'Bonjour !';
+    }
+	else if ($heure >= 13 && $heure <= 18) {
+      echo 'Salut !';
+    }
+	else if($heure > 18 && $heure <= 23) {
+		echo 'Bonsoir !';
+    }
+	else {
+		echo 'C\'est l\'heure de se coucher !';
+	}
+}
+
+function get_notification_icon(string $type): string
+{
+    return match($type) {
+        Notification::PRODUCTION_FONDS  => 'fa-donate',
+        Notification::CREDIT_DEBIT  => 'fa-coins',
+        Notification::DEBLOCAGE  => 'fa-unlock',
+        Notification::GENERATION_COMPTE  => 'fa-user-friends',
+        Notification::VIREMENT_FONDS  => 'fa-retweet',
+        Notification::BONUS  => 'fa-box-open',
+        Notification::RECEPTION_FONDS  => 'fa-level-down-alt',
+        Notification::NOUVEAU_ADMIN  => 'fa-user-tie',
+        default => 'fa-hashtag'
+    };
 }

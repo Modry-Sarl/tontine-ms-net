@@ -44,8 +44,13 @@ abstract class AppController extends ApplicationController
     protected function getLoggedUser() 
     {
         if (auth()->loggedIn()) {
-            $this->user = User::with('utilisateur')->find(auth()->user()->id);
+            $this->user = User::with(['utilisateur' => function($q) {
+                $q->with(['notifications' => fn($q) => $q->where('lu', 0)->limit(5) ]);
+            }])->find(auth()->user()->id);
+
+            $total_notifications = $this->user->utilisateur->notifications()->count();
             View::share('_user', $this->user);
+            View::share('total_notifications', $total_notifications);
         }
     }
 

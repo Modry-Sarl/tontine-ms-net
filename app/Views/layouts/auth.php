@@ -57,11 +57,11 @@
                                         <hr />
                                         <ul class="h6 font-weight-light my-3">
                                             <li class="pb-1">
-                                                TONTINE-MS est une plateforme permettant à des individus qui souhaitent ou 
+                                                TONTINE MS-NET est une plateforme permettant à des individus qui souhaitent ou 
                                                 aspirent à une meilleure vie de s'entraider en mutualisant leur force et leur finance.
                                             </li>
                                             <li class="pb-1">
-                                                TONTINE-MS est né de la volonté d'un groupe d'hommes d'affaires internationaux de premier 
+                                                TONTINE MS-NET est né de la volonté d'un groupe d'hommes d'affaires internationaux de premier 
                                                 plan, expérimenté dans l'informatique, le marketing de réseau et le développement personnel 
                                                 avec plus de 22 ans d'expériences professionnelle combinée.
                                             </li>

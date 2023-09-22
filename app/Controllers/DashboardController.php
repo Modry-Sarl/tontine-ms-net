@@ -6,7 +6,8 @@ use App\Entities\Notification;
 use App\Entities\Utilisateur;
 use App\Models\UserModel;
 use App\MS\Constants;
-use BlitzPHP\Wolke\Collection;
+use BlitzPHP\Schild\Models\LoginModel;
+use BlitzPHP\View\View;
 
 class DashboardController extends AppController
 {
@@ -14,12 +15,14 @@ class DashboardController extends AppController
     public function index()
     {
         $comptes = $this->user->comptes()->all();
-
         
+        $data = [
+            'derniere_connexion'  => model(LoginModel::class)->previousLogin($this->user),
+        ];
 
         $this->updateMatrice($comptes);
 
-        return $this->view('dashboard')->with('comptes', $comptes);
+        return $this->view('dashboard', $data)->with('comptes', $comptes);
     }
 
 
@@ -59,9 +62,7 @@ class DashboardController extends AppController
             }
         }
         
-
-
-        $this->getLoggedUser();
-
+        $this->user->utilisateur = Utilisateur::find($this->user->utilisateur->id);
+        View::share('_user', $this->user);
     }
 }
