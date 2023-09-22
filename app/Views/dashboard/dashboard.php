@@ -40,7 +40,7 @@
 					<div class="col-10 text-right ">
                         <div class="d-flex align-items-center justify-content-end">
                             <div class="pr-2 border-right">
-                                <span class="h3 font-weight-bold text-warning"><?= model('UserModel')->countFilleuls($_user->utilisateur) ?></span>
+                                <span class="h3 font-weight-bold text-warning"><?= $_user->utilisateur->nbr_filleuls ?></span>
                                 <span class="d-inline-block w-100">Filleuls</span>
                             </div>
                             <div class="pl-2 text-left">

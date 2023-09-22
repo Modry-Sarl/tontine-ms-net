@@ -14,6 +14,8 @@ class User extends SchildUser
         'username', 'email', 'pays', 'num_compte'
     ];
 
+    private $_tel = null;
+
     public function utilisateur() 
     {
         return $this->hasOne(Utilisateur::class);
@@ -45,9 +47,23 @@ class User extends SchildUser
         );
     }
 
+    public function getGainsAttribute()
+    {
+        return 0;
+    }
+
+    public function getTelAttribute()
+    {
+        if (null === $this->_tel) {
+            $this->_tel = $this->getEmailIdentity()->secret;
+        }
+        
+        return $this->_tel;
+    }
+
     public function __get(string $key): mixed
     {
-        if (!empty($v = parent::__get($key))) {
+        if (null !== $v = parent::__get($key)) {
             return $v;
         }
 

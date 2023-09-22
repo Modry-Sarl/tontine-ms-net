@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use App\Models\UserModel;
 use BlitzPHP\Wolke\Model;
 
 class Utilisateur extends Model
@@ -22,6 +23,9 @@ class Utilisateur extends Model
     protected array $casts = [
         'main'      => 'boolean',
     ];
+
+    private $_nbr_filleuls  = null;
+    private $_list_filleuls = null;
 
     public function user() 
     {
@@ -50,5 +54,28 @@ class Utilisateur extends Model
     public function filleuls()
     {
         return $this->hasMany(self::class, 'parrain', 'ref');
+    }
+
+    public function referer()
+    {
+        return $this->belongsTo(self::class, 'parrain', 'ref')->with('user');
+    }
+
+    public function getListFilleulsAttribute()
+    {
+        if (null === $this->_list_filleuls) {
+            $this->_list_filleuls = model(UserModel::class)->listFilleuls($this);
+        }
+
+        return $this->_list_filleuls;
+    }
+
+    public function getNbrFilleulsAttribute()
+    {
+        if (null === $this->_nbr_filleuls) {
+            $this->_nbr_filleuls = model(UserModel::class)->countFilleuls($this);
+        }
+
+        return $this->_nbr_filleuls;
     }
 }

@@ -16,22 +16,22 @@
                 </h2>
             </div>
             <ul class="nav pcoded-inner-navbar">
-                <li class="nav-item <?= link_active('dashboard') ?>">
+                <li class="nav-item <?= link_active('dashboard', 'active', true) ?>">
                     <a href="<?= link_to('dashboard') ?>" class="nav-link">
                         <span class="pcoded-micon"><i class="fa fa-fw fa-tachometer-alt"></i></span>
                         <span class="pcoded-mtext">Tableau de bord</span>
                     </a>
                 </li>
-                <li class="nav-item pcoded-hasmenu">
+                <li class="nav-item pcoded-hasmenu <?= link_active(['infos', 'progression', 'filleuls', 'comptes'], 'active pcoded-trigger') ?>">
                     <a href="javascript:" class="nav-link ">
                         <span class="pcoded-micon"><i class="fa fa-fw fa-user-cog"></i></span>
                         <span class="pcoded-mtext notranslate" translate="no">MS Adminer</span>
                     </a>
                     <ul class="pcoded-submenu">
-                        <li class=""><a class="" href="">Informations utiles</a></li>
-                        <li class=""><a class="" href="">Fiche de progression</a></li>
-                        <li class=""><a class="" href="">Liste de filleul</a></li>
-                        <li class=""><a class="" href="">Pseudo compte</a></li>
+                        <li class="<?= link_active('infos') ?>"><a class="" href="<?= link_to('infos') ?>">Informations utiles</a></li>
+                        <li class="<?= link_active('progression') ?>"><a class="" href="<?= link_to('progression') ?>">Fiche de progression</a></li>
+                        <li class="<?= link_active('filleuls') ?>"><a class="" href="<?= link_to('filleuls') ?>">Liste de filleul</a></li>
+                        <li class="<?= link_active('comptes') ?>"><a class="" href="<?= link_to('comptes') ?>">Comptes</a></li>
                     </ul>
                 </li>
                 <li class="nav-item pcoded-hasmenu <?= link_active(['retrait', 'recharge', 'transfert', 'transactions'], 'active pcoded-trigger') ?>">

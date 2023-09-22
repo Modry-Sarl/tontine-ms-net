@@ -49,6 +49,9 @@ abstract class AppController extends ApplicationController
             }])->find(auth()->user()->id);
 
             $this->user->tel = $this->user->getEmailIdentity()->secret;
+            if (null === $this->user->email) {
+                $this->user->email = $this->user->getAttribute('email');
+            }
 
             $total_notifications = $this->user->utilisateur->notifications()->count();
             View::share('_user', $this->user);

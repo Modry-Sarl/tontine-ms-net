@@ -112,7 +112,11 @@ class UserModel extends SchildUserModel
 
     public function countFilleuls(Utilisateur $user, ?int $niveau = null): int
     {
-        $filleuls = $this->listFilleuls($user, $niveau);
+        if ($niveau == null) {
+            $filleuls = $user->list_filleuls;
+        } else {
+            $filleuls = $this->listFilleuls($user, $niveau);
+        }
 
         
         if(Arr::dimensions($filleuls) == 1) {

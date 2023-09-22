@@ -19,7 +19,8 @@ class Constants
     public const DOLLAR_VALUE = 500;
     public const DOLLAR_VALUE_ENTREE = 475;
 
-    public const NBR_NIVEAU = 5;
+    public const NBR_NIVEAU    = 15;
+    public const TOTAL_FILLEUL = 65534;
 
     public const GAINS_NIVEAU = [
         1 => 10,
