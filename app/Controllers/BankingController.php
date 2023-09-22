@@ -151,7 +151,7 @@ class BankingController extends AppController
             Transaction::create([
                 'user_id'                 => $this->user->utilisateur->id,
                 'numero'                  => substr($sender['phonenumber'], 3, 9),
-                'montant'                 => to_dollar($sender['amount']),
+                'montant'                 => to_dollar($montant ?? $sender['amount']),
                 'frais'                   => 0,
                 'type'                    => 'sortie',
                 'status'                  => in_array($sender['success'], ['1', 1]),

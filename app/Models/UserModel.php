@@ -23,7 +23,7 @@ class UserModel extends SchildUserModel
     {
         $data = $this->select([
                 $this->table . '.*',
-                $this->tables['identities'] . '.secret As email',
+                $this->tables['identities'] . '.secret As tel',
                 $this->tables['identities'] . '.secret2 As password_hash',
             ])
             ->join($this->tables['identities'], [$this->tables['identities'] . '.user_id' => $this->table . '.id'])
@@ -31,9 +31,9 @@ class UserModel extends SchildUserModel
             ->where($this->tables['identities'] . '.type', Session::ID_TYPE_EMAIL_PASSWORD)
             ->where(function($q) use($login) {
                 return $q->orWhere([
-                    'LOWER(' . $this->tables['identities'] . '.secret)' => strtolower($login),
-                             'tel'                                      => $login,
-                             'ref'                                      => $login
+                    $this->tables['identities'] . '.secret' => simple_tel($login),
+                                  'LOWER(email)'            => strtolower($login),
+                                  'ref'                     => $login
                 ]);    
             })
             ->first(PDO::FETCH_ASSOC);
@@ -42,8 +42,8 @@ class UserModel extends SchildUserModel
             return null;
         }
 
-        $email = $data['email'];
-        unset($data['email']);
+        $tel = $data['tel'];
+        unset($data['tel']);
         $password_hash = $data['password_hash'];
         unset($data['password_hash']);
         $id = $data['id'];
@@ -52,7 +52,7 @@ class UserModel extends SchildUserModel
         $className           = $this->returnType;
         $user                = new $className($data);
         $user->id            = $id;
-        $user->email         = $email;
+        $user->tel           = $tel;
         $user->password_hash = $password_hash;
         $user->syncOriginal();
 
@@ -64,14 +64,12 @@ class UserModel extends SchildUserModel
      */
     public function listFilleuls(Utilisateur $user, ?int $niveau = null): array 
     {
-        if (empty(self::$filleul_niv[$user->ref])) {
-            self::$filleul_niv[$user->ref] = [
-                1 => [], 2 => [], 3 => [], 4 => [], 5 => [],
-                6 => [], 7 => [], 8 => [], 9 => [], 10 => [], 
-                11 => [], 12 => [], 13 => [], 14 => [], 15 => [],
-            ];
-        }
-
+        self::$filleul_niv[$user->ref] = [
+            1 => [], 2 => [], 3 => [], 4 => [], 5 => [],
+            6 => [], 7 => [], 8 => [], 9 => [], 10 => [], 
+            11 => [], 12 => [], 13 => [], 14 => [], 15 => [],
+        ];
+        
         if (empty(self::$filleul_niv[$user->ref][1])) {
             // On recupere les filleuls directs du membre
             $filleuls = $user->filleuls()->all();

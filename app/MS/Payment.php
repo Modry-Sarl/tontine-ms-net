@@ -161,7 +161,7 @@ class Payment
 			'return_url'  => link_to('recharge'),
 			'notify_url'  => link_to('payment.notify', $ref),
 			'cancel_url'  => link_to('recharge'),
-			'logo'        => img_url('logo.png'),
+			'logo'        => img_url('logo/logo-mini.jpg'),
 		]);
 
 		$result = json_decode($json, true);

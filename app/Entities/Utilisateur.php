@@ -2,7 +2,6 @@
 
 namespace App\Entities;
 
-use BlitzPHP\Wolke\Casts\Attribute;
 use BlitzPHP\Wolke\Model;
 
 class Utilisateur extends Model
@@ -12,7 +11,7 @@ class Utilisateur extends Model
 
     protected array $fillable = [
         'user_id', 'ref', 'parrain',
-        'tel', 'pays', 'main'
+        'main'
     ];
 
     /**
@@ -51,20 +50,5 @@ class Utilisateur extends Model
     public function filleuls()
     {
         return $this->hasMany(self::class, 'parrain', 'ref');
-    }
-
-    protected function avatar(): Attribute
-    {
-        helper('assets');
-        
-        return Attribute::make(
-            get: function(?string $value) {
-                if (empty($value)) {
-                    return img_url('avatars/' . (empty($this->sexe) ? 'default' : $this->sexe) . '.png');
-                }
-
-                return $value;
-            },
-        );
     }
 }

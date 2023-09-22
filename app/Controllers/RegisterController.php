@@ -120,7 +120,9 @@ class RegisterController extends AppController
             Inscription::create([
                 'user_id'    => $registered->user_id,
                 'inscriptor' => $this->user->id,
-                'nbr'        => $comptes_crees
+                'nbr'        => $comptes_crees,
+                'ip'         => $this->request->clientIp(),
+                'ua'         => $this->request->userAgent(),
             ]);
 
             $db->commit();

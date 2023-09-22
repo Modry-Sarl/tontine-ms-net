@@ -8,10 +8,10 @@
 		<div class="card card-primary border-primary">
 			<div class="card-body">
 				<div class="row">
-					<div class="col-3">
-						<i class="fa fa-coins fa-3x"></i>
+					<div class="col-2">
+						<i class="fa fa-coins fa-2x"></i>
 					</div>
-					<div class="col-9 text-right">
+					<div class="col-10 text-right">
 						<div class="d-flex align-items-center justify-content-end">
                             <div class="pr-2 border-right">
                                 <span class="h3 font-weight-bold text-warning"><?= $_user->solde_principal ?> $</span>
@@ -34,10 +34,10 @@
         <div class="card card-primary border-primary">
 			<div class="card-body">
 				<div class="row">
-					<div class="col-3">
-						<i class="fa fa-users fa-3x"></i>
+					<div class="col-2">
+						<i class="fa fa-users fa-2x"></i>
 					</div>
-					<div class="col-9 text-right ">
+					<div class="col-10 text-right ">
                         <div class="d-flex align-items-center justify-content-end">
                             <div class="pr-2 border-right">
                                 <span class="h3 font-weight-bold text-warning"><?= model('UserModel')->countFilleuls($_user->utilisateur) ?></span>
@@ -61,7 +61,7 @@
 			<div class="card-body">
 				<div class="row">
 					<div class="col-3">
-						<i class="fa fa-user-md fa-3x"></i>
+						<i class="fa fa-user-md fa-2x"></i>
 					</div>
 					<div class="col-9 text-right ">
                         <span class="h3 font-weight-bold text-warning"><?= count($comptes) ?></span>

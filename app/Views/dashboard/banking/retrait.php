@@ -26,7 +26,7 @@
                 </div>
                 <div class="form-group">
                     <label>Montant à retirer <small class="text-muted">(En Dollar)</small> <small class="text-danger">*</small></label>
-                    <input type="number" name="montant" value="<?= old('montant') ?>" autocomplete="off" class="form-control" placeholder="Ex: 18" />
+                    <input type="number" name="montant" min="1" value="<?= old('montant') ?>" autocomplete="off" class="form-control" placeholder="Ex: 18" />
                 </div>
                 <div class="form-group">
                     <label>Numéro de bénéficiaire <small class="text-danger">*</small></label>

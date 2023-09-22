@@ -7,6 +7,7 @@ use App\Entities\Utilisateur;
 use App\Models\UserModel;
 use BlitzPHP\Facades\Storage;
 use BlitzPHP\Schild\Config\Services;
+use BlitzPHP\Schild\Entities\UserIdentity;
 use BlitzPHP\Utilities\String\Text;
 use Exception;
 
@@ -27,8 +28,9 @@ class Register
     {
         $this->provider = model(UserModel::class);
 
-        unset($data[$password]);
-        $this->data     = $data;
+        unset($data['password']);
+        $data['tel'] = simple_tel($data['tel']);
+        $this->data  = $data;
 
         $this->findUser();
         $this->findPassword($password);
@@ -48,8 +50,6 @@ class Register
             'ref'     => $ref,
             'parrain' => $this->data['parrain'] ?? null,
             'main'    => $this->exist === false,
-            'tel'     => $this->data['tel'],
-            'pays'    => $this->data['pays'],
         ]);
 
         return $utilisateur;
@@ -64,7 +64,7 @@ class Register
             $this->password_hash = $this->user->password_hash;
         } else {
             if (empty($password)) {
-                $password = Text::random(8);
+                $password = $this->data['tel'] ?? Text::random(8);
             }
             $this->password = $password;
             $this->password_hash = Services::passwords()->hash($this->password);
@@ -76,11 +76,15 @@ class Register
      */
     private function findUser(): void
     {
-        $user = Utilisateur::where('tel', $this->data['tel'])->first();
+        $user =  UserIdentity::where('secret', $this->data['tel'])->first();
         if ($user) {
             $this->user = $this->provider->findById($user->user_id, true);
         } else {
-            $this->user = $this->provider->findByCredentials(['email' => $this->data['email']]);
+            $this->user = $this->provider->findByCredentials(['email' => $this->data['tel']]);
+        }
+
+        if ($this->user) {
+            $this->user->tel = $this->user->email;
         }
     }
 
@@ -90,11 +94,14 @@ class Register
             $user = new User();
 
             $user->fill([
-                'username' => $this->randomUsername()
+                'username'   => $this->randomUsername(),
+                'email'      => $this->data['email'],
+                'num_compte' => time(),
+                'pays'       => $this->data['pays'],
             ]);
 
             try {
-                $user->setEmail($this->data['email']);
+                $user->setEmail($this->data['tel']);
                 $user->setPasswordHash($this->password_hash);
                 $user->save();
                 $user->saveEmailIdentity();
