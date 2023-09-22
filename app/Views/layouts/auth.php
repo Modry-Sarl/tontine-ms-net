@@ -2,7 +2,7 @@
 <html lang="<?= config('app.language') ?>">
 
 <head>
-    <title><?= $this->show('title', true) ?> - TONTINE-MS</title>
+    <title><?= $this->show('title', true) ?> - TONTINE MS-NET</title>
     <!-- HTML5 Shim and Respond.js IE10 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 10]>

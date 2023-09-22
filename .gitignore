@@ -120,3 +120,4 @@ nb-configuration.xml
 # App
 /storage/app/payments/**
 !/storage/app/payments/.gitkeep
+/dploy.yaml

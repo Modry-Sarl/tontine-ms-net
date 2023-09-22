@@ -25,7 +25,7 @@
                             <h6 class="d-inline-block m-b-0">Notifications</h6>
                         </div>
                         <ul class="noti-body">
-                            <?php if (empty($_user->utilisateur->notifications)): ?>
+                            <?php if (1 > $_user->utilisateur->notifications->count()): ?>
                             <p class="text-center">
                                 Aucune nouvelle notification pour le moment.
                                 <br/>
