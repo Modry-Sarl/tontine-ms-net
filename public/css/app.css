@@ -1,3 +1,19 @@
+.pcoded-main-container {
+    background-color: #6495ed;
+    background-image: url(../img/logo/logo.jpg);
+    background-size: cover;
+    background-position: 10em -2.5em;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    object-fit: cover;
+}
+@media all and (max-width: 750px) {
+    .pcoded-main-container {
+        background-image: linear-gradient(to top,rgba(161, 113, 65, .8), #fff);
+        background-position: center; 
+        min-height: auto
+    }
+}
 .titre-principal {
     text-align: center;
     font-family: "Trebuchet ms",verdana,sans-serif;
@@ -6,8 +22,11 @@
     font-variant: small-caps;
     font-weight: 700;
     margin-top: .1em;
-    text-shadow: 3px 2px 1px rgba(29, 233, 182, .8);
+    text-shadow: 3px 2px 1px rgba(161, 113, 65, .8);
     color: #ffffffe3;
+}
+.auth-wrapper .titre-principal {
+    font-size: 1.5em;
 }
 @media all and (max-width: 750px) {
     .titre-principal {

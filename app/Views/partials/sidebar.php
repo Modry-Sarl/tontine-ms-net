@@ -1,11 +1,9 @@
 <nav class="pcoded-navbar">
     <div class="navbar-wrapper">
         <div class="navbar-brand header-logo">
-            <a href="<?= link_to('dashboard') ?>" class="b-brand">
-                <div class="b-bg">
-                    <i class="feather icon-trending-up"></i>
-                </div>
-                <span class="b-title">TONTINE-MS</span>
+            <a href="<?= link_to('dashboard') ?>" class="b-brand ml-n2">
+                <img class="img-fluid rounded-circle" style="width: 2em" src="<?= img_url('logo/logo-mini.jpg') ?>" alt="">
+                <span class="b-title font-weight-bold text-center">TONTINE MS-NET</span>
             </a>
             <a class="mobile-menu" id="mobile-collapse" href="javascript:"><span></span></a>
         </div>
@@ -18,8 +16,8 @@
                 </h2>
             </div>
             <ul class="nav pcoded-inner-navbar">
-                <li class="nav-item">
-                    <a href="<?= link_to('dashboard') ?>" class="nav-link <?= link_active('dashboard') ?>">
+                <li class="nav-item <?= link_active('dashboard') ?>">
+                    <a href="<?= link_to('dashboard') ?>" class="nav-link">
                         <span class="pcoded-micon"><i class="fa fa-fw fa-tachometer-alt"></i></span>
                         <span class="pcoded-mtext">Tableau de bord</span>
                     </a>

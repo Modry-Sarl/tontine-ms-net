@@ -14,11 +14,11 @@
 					<div class="col-9 text-right">
 						<div class="d-flex align-items-center justify-content-end">
                             <div class="pr-2 border-right">
-                                <span class="h3 font-weight-bold text-primary"><?= $_user->solde_principal ?> $</span>
+                                <span class="h3 font-weight-bold text-warning"><?= $_user->solde_principal ?> $</span>
                                 <span class="d-inline-block w-100">Principal</span>
                             </div>
                             <div class="pl-2 text-left">
-                                <span class="h3 font-weight-bold text-primary"><?= $_user->solde_recharge ?> $</span>
+                                <span class="h3 font-weight-bold text-warning"><?= $_user->solde_recharge ?> $</span>
                                 <span class="d-inline-block w-100">Recharge</span>
                             </div>
                         </div>
@@ -40,15 +40,14 @@
 					<div class="col-9 text-right ">
                         <div class="d-flex align-items-center justify-content-end">
                             <div class="pr-2 border-right">
-                                <span class="h3 font-weight-bold text-primary"><?= model('UserModel')->countFilleuls($_user->utilisateur) ?></span>
+                                <span class="h3 font-weight-bold text-warning"><?= model('UserModel')->countFilleuls($_user->utilisateur) ?></span>
                                 <span class="d-inline-block w-100">Filleuls</span>
                             </div>
                             <div class="pl-2 text-left">
-                                <span class="h3 font-weight-bold text-primary"><?= $_user->inscriptions()->count() ?></span>
+                                <span class="h3 font-weight-bold text-warning"><?= $_user->inscriptions()->count() ?></span>
                                 <span class="d-inline-block w-100">Inscriptions</span>
                             </div>
-                        </div>
-                        
+                        </div>               
                     </div>
 				</div>
                 <div class="progress m-t-30" style="height: 7px;">
@@ -65,7 +64,7 @@
 						<i class="fa fa-user-md fa-3x"></i>
 					</div>
 					<div class="col-9 text-right ">
-                        <span class="h3 font-weight-bold text-primary"><?= count($comptes) ?></span>
+                        <span class="h3 font-weight-bold text-warning"><?= count($comptes) ?></span>
                         <span class="d-inline-block w-100">Comptes</span>
                     </div>
 				</div>
@@ -83,7 +82,7 @@
 						<i class="fa fa-certificate fa-2x"></i>
 					</div>
 					<div class="col-9 text-right ">
-                        <span class="h4 font-weight-bold text-primary truncate text-truncate"><?= ucfirst($_user->pack) ?></span>
+                        <span class="h4 font-weight-bold text-warning truncate text-truncate"><?= ucfirst($_user->pack) ?></span>
                         <span class="d-inline-block w-100">Niveau <b class="font-weight-bold"><?= $_user->niveau ?></b></span>
                     </div>
 				</div>
