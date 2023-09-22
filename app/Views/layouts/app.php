@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="<?= css_url('style.css') ?>">
     <link rel="stylesheet" href="<?= css_url('app.css') ?>">
     <script src="<?= lib_js_url('htmx/htmx.min.js') ?>" defer></script>
-    <script src="https://unpkg.com/htmx.org/dist/ext/disable-element.js" defer></script>
+    <script src="<?= lib_js_url('htmx/disable-element.js') ?>" defer></script>
 </head>
 
 <body hx-ext="disable-element">
