@@ -155,7 +155,9 @@
 					<?php endforeach; ?>
                     </div>
                 <?php endif; ?>
+                <?php if ($total_notifications > 0): ?>
                 <a href="<?= link_to('notifications') ?>" class="btn btn-primary mt-4 btn-block">Voir toutes les  <b><?= $total_notifications ?></b> notifications</a>
+                <?php endif; ?>
 			</div>
 		</div>
     </div>

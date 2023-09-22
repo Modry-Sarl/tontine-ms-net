@@ -47,9 +47,11 @@
                             </li>
                             <?php endforeach; endif; ?>
                         </ul>
+                        <?php if ($total_notifications > 0): ?>
                         <div class="noti-footer">
                             <a href="<?= link_to('notifications') ?>">Voir toutes les <b><?= $total_notifications ?></b> notifications</a>
                         </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </li>
