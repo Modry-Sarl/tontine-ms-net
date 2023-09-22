@@ -35,7 +35,7 @@
                                         <img class="rounded-circle" style="width:40px;" src="<?= $i->utilisateur->avatar ?>" alt="">
                                         <div class="ml-2">
                                             <h5 class="mb-1"><?= $i->utilisateur->ref ?></h5>
-                                            <h6 class="mb-1"><?= $i->utilisateur->tel ?> - <?= $i->utilisateur->user->username ?></h6>
+                                            <h6 class="mb-1"><?php helper('scl'); echo scl_splitInt($i->utilisateur->user->tel, 2); ?> - <?= $i->utilisateur->user->username ?></h6>
                                         </div>
                                     </div></td>
                                     <td>
