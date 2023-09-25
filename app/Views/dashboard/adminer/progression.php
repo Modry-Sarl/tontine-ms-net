@@ -20,7 +20,7 @@
 							</tr>
 						</thead>
 						<tbody>
-                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                        <?php for ($i = 1; $i <= $iteration; $i++): ?>
                             <?php if (in_array($i, $niveaux, true)) {
                                 $niveau = $_user->niveaux->first(fn($n) => $n->niveau == $i);
                                 
@@ -58,7 +58,7 @@
 							</tr>
 						</thead>
 						<tbody>
-                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                        <?php for ($i = 1; $i <= $iteration; $i++): ?>
                             <tr>
                                 <td><?= $i ?></td>
                                 <td><?= number_format(\App\MS\Constants::nbrFilleulByNiveau($i), 0, '.', ' ') ?></td>
@@ -110,7 +110,7 @@
 						</tr>
 					</thead>
 					<tbody>
-                        <?php for ($i = 1; $i <= \App\MS\Constants::NBR_NIVEAU; $i++): ?>
+                        <?php for ($i = 1; $i <= $iteration; $i++): ?>
                         <tr>
                             <td><?= $i ?></td>
                             <td><?= number_format(count($_user->list_filleuls[$i]), 0, '.', ' ') . ' / ' . number_format(\App\MS\Constants::nbrFilleulByNiveau($i), 0, '.', ' ') ?></td>

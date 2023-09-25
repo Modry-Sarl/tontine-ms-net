@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\MS\Constants;
+
 class AdminerController extends AppController
 {
     protected $helpers = [
@@ -30,6 +32,15 @@ class AdminerController extends AppController
     {
         $niveaux = $this->user->niveaux->map(fn($n) => $n->niveau)->all();
 
-        return view('dashboard/adminer/progression')->with('niveaux', $niveaux);
+        $iteration = Constants::NBR_NIVEAU;
+        $pack = strtolower($this->user->pack);
+
+        if ($pack === 'argent') {
+            $iteration -= 10;
+        } elseif ($pack === 'or') {
+            $iteration -= 5;
+        }
+
+        return view('dashboard/adminer/progression', compact('niveaux', 'iteration'));
     }
 }
