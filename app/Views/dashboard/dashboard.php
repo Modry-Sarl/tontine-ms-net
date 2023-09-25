@@ -163,4 +163,86 @@
     </div>
 </div>
 
+<div class="card card-default">
+    <div class="card-body">
+        <h3 style="border-bottom: 2px solid">Statistiques</h3>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header theme-bg">
+                        <h5 class=" text-white"><i class="fa fa-chart-pie fa-fw"></i> Les membres MS-NET</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="w-100 table">
+                            <tr class="bg-light"><th colspan="2">Nombre d'inscrits</th></tr>
+                            <tr>
+                                <td class="pl-3">
+                                    <dl class="row"><dt class="col-sm-5">Ce jour</dt><dd class="col-sm-7 text-right"><?= $inscriptions['day']; ?></dd></dl>
+                                    <dl class="row"><dt class="col-sm-5">Cette semaine</dt><dd class="col-sm-7 text-right"><?= $inscriptions['week']; ?></dd></dl>
+                                    <dl class="row"><dt class="col-sm-5">Ce mois</dt><dd class="col-sm-7 text-right"><?= $inscriptions['month']; ?></dd></dl>
+                                    <dl class="row"><dt class="col-sm-5">Cette année</dt><dd class="col-sm-7 text-right"><?= $inscriptions['year']; ?></dd></dl>
+                                </td>
+                                <td class="pl-3">
+                                    <dl class="row"><dt class="col-sm-5">Hier</dt><dd class="col-sm-7 text-right"><?= $inscriptions['day_before']; ?></dd></dl>
+                                    <dl class="row"><dt class="col-sm-5">La semaine passée</dt><dd class="col-sm-7 text-right"><?= $inscriptions['week_before']; ?></dd></dl>
+                                    <dl class="row"><dt class="col-sm-5">Le mois passé</dt><dd class="col-sm-7 text-right"><?= $inscriptions['month_before']; ?></dd></dl>
+                                    <dl class="row"><dt class="col-sm-5">L'année passée</dt><dd class="col-sm-7 text-right"><?= $inscriptions['year_before']; ?></dd></dl>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pl-3" colspan="2">
+                                    <dl class="row"><dt class="col-sm-5">Total</dt><dd class="col-sm-7 text-right"><?= $inscriptions['total']; ?></dd></dl>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <table class="w-100 table">
+                                    <tr class="bg-light"><th colspan="2">5 dernieres inscriptions</th></tr>
+                                    <tr><td>
+                                        <?php foreach($dernieres_incriptions as $di): ?>
+                                        <dl class="row mb-0">
+                                            <dt class="col-md-12"><?= $di->ref ?> <span style="font-weight:lighter; font-family:\'arial narrow\',\'Lato\';"><?= $di->username ?> --- <?= scl_splitInt($di->user->tel, 2) ?></span></dt>
+                                            <dd class="col-md-12" style="font-size:.9em">Inscrit le <?= $di->created_at->format('d F Y à H:i:s') ?></dd>
+                                        </dl>
+                                        <?php endforeach; ?>
+                                    </td></tr>
+                                </table>
+                            </div>
+                            <div class="col-lg-6">
+                                <table class="w-100 table">
+                                    <tr class="bg-light"><th colspan="2">Nombre de membre par niveau</th></tr>
+                                    <tr><td>
+                                        <?php foreach($membres_niveau as $mn): ?>
+                                        <dl class="row mb-2">
+                                            <dt class="col-sm-5">Niveau <?= $mn->niveau ?></dt>
+                                            <dd class="col-sm-7 text-right"><?= $mn->count ?></dd>
+                                        </dl>
+                                        <?php endforeach; ?>
+                                    </td></tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header theme-bg">
+                        <h5 class=" text-white"><i class="fa fa-crown fa-fw"></i> Les meilleurs inscripteurs</h5>
+                    </div>
+                    <div class="card-body">
+                    <?php foreach ($meilleurs_inscripteurs as $mi): ?>
+				        <dl class="row mb-0">
+					        <dt class="col-md-12"><?= $mi->ref ?> : <span style="font-weight:lighter; font-family:\'arial narrow\',\'Lato\';"><?= scl_splitInt($mi->tel, 2) ?> (<?= $mi->username ?>)</span></dt>
+					        <dd class="col-md-12" style="font-size:.9em"><b><?= number_format($mi->nbrInscriptions, 0, '.', ' ') ?></b> inscriptions | 	Niveau <?= $mi->niveau ?> | Classe <?= $mi->pack ?></dd>
+        				</dl>
+                    <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php $this->end() ?>

@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Entities\Notification;
 use App\Entities\Utilisateur;
+use App\Models\StatsModel;
 use App\Models\UserModel;
 use App\MS\Constants;
 use BlitzPHP\Schild\Models\LoginModel;
@@ -15,12 +16,27 @@ class DashboardController extends AppController
     public function index()
     {
         $comptes = $this->user->comptes()->all();
-        
+
+        $stats = model(StatsModel::class);
+
+        $inscriptions = [
+            'total' => $stats->countMembers(),
+        ];
+        foreach (['day', 'week', 'month', 'year', 'day_before', 'week_before', 'month_before', 'year_before'] as $sort) {
+           $inscriptions[$sort] = $stats->countMembers(['sort_by' => $sort]); 
+        }
+
         $data = [
-            'derniere_connexion'  => model(LoginModel::class)->previousLogin($this->user),
+            'derniere_connexion'     => model(LoginModel::class)->previousLogin($this->user),
+            'dernieres_incriptions'  => $stats->lastInscriptions(5),
+            'inscriptions'           => $inscriptions,
+            'membres_niveau'         => $stats->countMembersByNiveau(5),
+            'meilleurs_inscripteurs' => $stats->bestRegister(),
         ];
 
         $this->updateMatrice($comptes);
+
+        helper('scl');
 
         return $this->view('dashboard', $data)->with('comptes', $comptes);
     }
