@@ -12,6 +12,7 @@ class CreateTableInscription extends Migration
     public function up()
     {
         $this->create('inscriptions', function(Structure $table) {
+            $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('inscriptor');
             $table->integer('nbr');

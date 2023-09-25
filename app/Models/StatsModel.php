@@ -89,6 +89,7 @@ class StatsModel extends Model
             ->join('auth_identities', ['utilisateurs.user_id' => 'auth_identities.user_id'])
             ->groupBy('inscriptor')
             ->sortDesc('nbrInscriptions')
+            ->sortAsc('niveau')
             ->limit($limit)
             ->all();
     }
