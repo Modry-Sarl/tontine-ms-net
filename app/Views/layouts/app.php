@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="<?= lib_css_url('animation/animate.min.css') ?>" />
     <link rel="stylesheet" href="<?= css_url('style.css') ?>">
     <link rel="stylesheet" href="<?= css_url('app.css') ?>">
+    <?php $this->show('styles') ?>
     <script src="<?= lib_js_url('htmx/htmx.min.js') ?>" defer></script>
     <script src="<?= lib_js_url('htmx/disable-element.js') ?>" defer></script>
 </head>
@@ -70,5 +71,6 @@
     <script src="<?= js_url('vendor-all.min.js') ?>"></script>
 	<script src="<?= lib_js_url('bootstrap/bootstrap.min.js') ?>"></script>
     <script src="<?= js_url('pcoded.min.js') ?>"></script>
+    <?php $this->show('scripts') ?>
 </body>
 </html>

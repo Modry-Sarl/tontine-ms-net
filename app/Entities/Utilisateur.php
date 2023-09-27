@@ -61,10 +61,10 @@ class Utilisateur extends Model
         return $this->belongsTo(self::class, 'parrain', 'ref')->with('user');
     }
 
-    public function getListFilleulsAttribute()
+    public function getListFilleulsAttribute($withUser = false)
     {
         if (null === $this->_list_filleuls) {
-            $this->_list_filleuls = model(UserModel::class)->listFilleuls($this);
+            $this->_list_filleuls = model(UserModel::class)->listFilleuls($this, null, $withUser);
         }
 
         return $this->_list_filleuls;

@@ -44,4 +44,21 @@ class Constants
     {
         return pow(2, $niveau);
     }
+
+    /**
+     * Renvoie le nombre d'interation pour l'affichage de la progression en fonction du pack actuel de l'utilisateur.
+     */
+    public static function getIteration(string $pack): int 
+    {
+        $iteration = Constants::NBR_NIVEAU;
+        $pack = strtolower($pack);
+
+        if ($pack === 'argent') {
+            $iteration -= 10;
+        } elseif ($pack === 'or') {
+            $iteration -= 5;
+        }
+
+        return $iteration;
+    }
 }

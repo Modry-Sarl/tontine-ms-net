@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Entities\User;
+use App\MS\Constants;
 use BlitzPHP\Controllers\ApplicationController;
 use BlitzPHP\View\View;
 use Psr\Http\Message\ResponseInterface;
@@ -59,6 +60,13 @@ abstract class AppController extends ApplicationController
         }
     }
 
+    /**
+     * Renvoie le nombre d'interation pour l'affichage de la progression en fonction du pack actuel de l'utilisateur.
+     */
+    protected function getIteration(): int 
+    {
+        return Constants::getIteration($this->user->pack);
+    }
     
 
     /**

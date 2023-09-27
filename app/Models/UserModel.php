@@ -62,8 +62,14 @@ class UserModel extends SchildUserModel
     /**
      * Renvoi la liste de filleul d'un utilisateur
      */
-    public function listFilleuls(Utilisateur $user, ?int $niveau = null): array 
+    public function listFilleuls(Utilisateur $user, int|array|null $niveau = null, $withUser = false): array 
     {
+        $limit = null;
+        if (is_array($niveau)) {
+            $limit  = $niveau['limit'] ?? null;
+            $niveau = $niveau['niveau'] ?? null;
+        }
+
         self::$filleul_niv[$user->ref] = [
             1 => [], 2 => [], 3 => [], 4 => [], 5 => [],
             6 => [], 7 => [], 8 => [], 9 => [], 10 => [], 
@@ -72,7 +78,7 @@ class UserModel extends SchildUserModel
         
         if (empty(self::$filleul_niv[$user->ref][1])) {
             // On recupere les filleuls directs du membre
-            $filleuls = $user->filleuls()->all();
+            $filleuls = ($withUser === true ? $user->filleuls()->with('user') : $user->filleuls())->all();
             foreach ($filleuls as $filleul) {
                 self::$filleul_niv[$user->ref][1][] = $filleul;
             }
@@ -95,12 +101,12 @@ class UserModel extends SchildUserModel
                     continue;
                 }
 
-				foreach ($filleul->filleuls()->all() as $valeur) {
+				foreach (($withUser === true ? $filleul->filleuls()->with('user') : $filleul->filleuls())->all() as $valeur) {
 					self::$filleul_niv[$user->ref][($i+1)][] = $valeur;
 				}	
 			}
 
-            if ($i === $niveau) {
+            if ($i === $niveau || $i === $limit) {
                 break;
             }
 		}
@@ -115,7 +121,7 @@ class UserModel extends SchildUserModel
         if ($niveau == null) {
             $filleuls = $user->list_filleuls;
         } else {
-            $filleuls = $this->listFilleuls($user, $niveau);
+            $filleuls = $this->listFilleuls($user, $niveau, false);
         }
 
         

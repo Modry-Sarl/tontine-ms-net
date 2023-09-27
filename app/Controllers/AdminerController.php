@@ -2,7 +2,8 @@
 
 namespace App\Controllers;
 
-use App\MS\Constants;
+use App\Entities\Utilisateur;
+use App\Models\UserModel;
 
 class AdminerController extends AppController
 {
@@ -28,19 +29,40 @@ class AdminerController extends AppController
         return view('dashboard/adminer/comptes')->with('comptes', $comptes);
     }
     
+    /**
+     * Progression du membre
+     */
     public function progression()
     {
         $niveaux = $this->user->niveaux->map(fn($n) => $n->niveau)->all();
 
-        $iteration = Constants::NBR_NIVEAU;
-        $pack = strtolower($this->user->pack);
-
-        if ($pack === 'argent') {
-            $iteration -= 10;
-        } elseif ($pack === 'or') {
-            $iteration -= 5;
-        }
+        $iteration = $this->getIteration();
 
         return view('dashboard/adminer/progression', compact('niveaux', 'iteration'));
+    }
+
+    /**
+     * Liste des filleuls du membre
+     */
+    public function filleuls()
+    {
+        $filleuls  = $this->user->utilisateur->getListFilleulsAttribute(true);
+        $iteration = $this->getIteration();
+
+        return view('dashboard/adminer/filleuls', compact('filleuls', 'iteration'));
+    }
+
+    /**
+     * Arbre de filleuls
+     */
+    public function arbre()
+    {
+        if (! $user = Utilisateur::with('user')->where('ref', $this->request->ref)->first()) {
+            return show404('Utilisateur non trouvé');
+        }
+
+        $filleuls = model(UserModel::class)->listFilleuls($user, ['limit' => 5], true);
+        
+        return view('dashboard/adminer/arbre', compact('filleuls', 'user'));
     }
 }

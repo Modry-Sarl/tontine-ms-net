@@ -50,8 +50,9 @@ Route::prefix('dashboard')->middleware(['session'])->group(function(RouteBuilder
     $route->middleware(['session'])->prefix('adminer')->controller(AdminerController::class)->group(function(RouteBuilder $route) {
         $route->name('infos')->get('/infos', 'infos');
         $route->name('progression')->get('/progression', 'progression');
-        // $route->name('filleuls')->get('/filleuls', 'filleuls');
         $route->name('comptes')->get('/comptes', 'comptes');
+        $route->name('filleuls')->get('/filleuls', 'filleuls');
+        $route->name('arbre-filleul')->match(['get', 'post'], '/filleuls/arbre', 'arbre');
     });
 });
 
