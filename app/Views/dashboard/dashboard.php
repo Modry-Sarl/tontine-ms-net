@@ -202,7 +202,7 @@
                                     <tr><td>
                                         <?php foreach($dernieres_incriptions as $di): ?>
                                         <dl class="row mb-0">
-                                            <dt class="col-md-12"><?= $di->ref ?> <span style="font-weight:lighter; font-family:\'arial narrow\',\'Lato\';"><?= $di->username ?> --- <?= scl_splitInt($di->user->tel, 2) ?></span></dt>
+                                            <dt class="col-md-12"><?= $di->ref ?> | <span style="font-weight:lighter; font-family:\'arial narrow\',\'Lato\';"><?= $di->user->username ?> --- <?= scl_splitInt($di->user->tel, 2) ?></span></dt>
                                             <dd class="col-md-12" style="font-size:.9em">Inscrit le <?= $di->created_at->format('d F Y à H:i:s') ?></dd>
                                         </dl>
                                         <?php endforeach; ?>

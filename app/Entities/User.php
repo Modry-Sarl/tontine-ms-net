@@ -11,10 +11,8 @@ class User extends SchildUser
     use SoftDeletes;
 
     protected array $fillable = [
-        'username', 'email', 'pays', 'num_compte'
+        'username', 'tel', 'pays', 'num_compte'
     ];
-
-    private $_tel = null;
 
     public function utilisateur() 
     {
@@ -50,15 +48,6 @@ class User extends SchildUser
     public function getGainsAttribute()
     {
         return 0;
-    }
-
-    public function getTelAttribute()
-    {
-        if (null === $this->_tel) {
-            $this->_tel = $this->getEmailIdentity()->secret;
-        }
-        
-        return $this->_tel;
     }
 
     public function __get(string $key): mixed

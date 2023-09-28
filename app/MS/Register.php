@@ -7,7 +7,6 @@ use App\Entities\Utilisateur;
 use App\Models\UserModel;
 use BlitzPHP\Facades\Storage;
 use BlitzPHP\Schild\Config\Services;
-use BlitzPHP\Schild\Entities\UserIdentity;
 use BlitzPHP\Utilities\String\Text;
 use Exception;
 
@@ -76,15 +75,11 @@ class Register
      */
     private function findUser(): void
     {
-        $user =  UserIdentity::where('secret', $this->data['tel'])->first();
+        $user =  User::where('tel', $this->data['tel'])->first();
         if ($user) {
             $this->user = $this->provider->findById($user->user_id, true);
         } else {
-            $this->user = $this->provider->findByCredentials(['email' => $this->data['tel']]);
-        }
-
-        if ($this->user) {
-            $this->user->tel = $this->user->email;
+            $this->user = $this->provider->findByCredentials(['email' => $this->data['email']]);
         }
     }
 
@@ -95,13 +90,13 @@ class Register
 
             $user->fill([
                 'username'   => $this->randomUsername(),
-                'email'      => $this->data['email'],
+                'tel'        => $this->data['tel'],
                 'num_compte' => time(),
                 'pays'       => $this->data['pays'],
             ]);
 
             try {
-                $user->setEmail($this->data['tel']);
+                $user->setEmail($this->data['email']);
                 $user->setPasswordHash($this->password_hash);
                 $user->save();
                 $user->saveEmailIdentity();

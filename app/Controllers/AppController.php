@@ -49,10 +49,7 @@ abstract class AppController extends ApplicationController
                 $q->with(['notifications' => fn($q) => $q->where('lu', 0)->limit(5) ]);
             }])->find(auth()->user()->id);
 
-            $this->user->tel = $this->user->getEmailIdentity()->secret;
-            if (null === $this->user->email) {
-                $this->user->email = $this->user->getAttribute('email');
-            }
+            $this->user->email = auth()->user()->email;
 
             $total_notifications = $this->user->utilisateur->notifications()->count();
             View::share('_user', $this->user);

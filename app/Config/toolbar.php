@@ -62,7 +62,7 @@ return [
      *
      * @var int
      */
-    'max_queries' => 100,
+    'max_queries' => 1000,
 
     /**
      * Specifie si on doit afficher la debugbar ou pas
