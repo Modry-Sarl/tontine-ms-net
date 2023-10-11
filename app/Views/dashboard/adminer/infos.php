@@ -53,7 +53,7 @@
                     </li>
                     <li class="px-0 list-group-item d-flex justify-content-between">
                         <span class="mb-0">Nombre de descendants</span> 
-                        <strong class="font-weight-bold text-dark"><?= scl_splitInt($_user->utilisateur->nbr_filleuls) ?> / <?= scl_splitInt(\App\MS\Constants::TOTAL_FILLEUL); ?></strong>
+                        <strong class="font-weight-bold text-dark"><?= scl_splitInt($_user->utilisateur->nbr_filleuls) ?></strong>
                     </li>
                     <li class="px-0 list-group-item d-flex justify-content-between">
                         <span class="mb-0">Gains cumulés</span> 
