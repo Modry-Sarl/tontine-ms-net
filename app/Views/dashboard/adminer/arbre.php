@@ -15,19 +15,19 @@
 
     <ul class="arbre niv_2">
     <?php for ($k = 0; $k < 2; $k++): ?>
-        <li><ul class="content_ul"><?php displayTree($filleuls[2]) ?></ul></li>
+        <li><ul class="content_ul"><?php displayTree($filleuls[2], $k) ?></ul></li>
     <?php endfor; ?>
     </ul>
 
     <ul class="arbre niv_3">
     <?php for ($k = 0; $k < 4; $k++): ?>
-        <li><ul class="content_ul"><?php displayTree($filleuls[3]) ?></ul></li>
+        <li><ul class="content_ul"><?php displayTree($filleuls[3], $k) ?></ul></li>
     <?php endfor; ?>
     </ul>
 </div>
 
-<?php function displayTree(array $filleuls) {
-    for ($i = 0; $i < 2; $i++) {
+<?php function displayTree(array $filleuls, int $k = 0) {
+    for ($i = $k * 2; $i < ($k * 2) + 2; $i++) {
         $filleul = $filleuls[$i] ?? null;
         if (!empty($filleul)) {
             $contenu  = 'plein';
