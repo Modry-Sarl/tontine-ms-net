@@ -151,14 +151,25 @@ class UserModel extends SchildUserModel
 
             Niveau::create(['user_id' => $user->id, 'niveau' => $niveau]);
             $user->niveau = $niveau;
-            $user->save();
 
             if (!$this->aRecuGain($user, $niveau)) {
                 $montant = Constants::GAINS_NIVEAU[$niveau] * 0.5;
+                if (in_array($niveau, [5, 10], true)) {
+                    $montant = 0;
+                }
 
                 $this->insertRecuGain($user, $niveau, Constants::GAINS_NIVEAU[$niveau], $montant);
-                $user->increment('solde_principal', $montant);
+                
+                if (! in_array($niveau, [5, 10], true)) {
+                    $user->increment('solde_principal', $montant);
+                } else if ($niveau === 5) {
+                    $user->pack = 'or';
+                } else if ($niveau === 10) {
+                    $user->pack = 'diamant';
+                }
             }
+
+            $user->save();
 
             $this->commit();
         } catch (\Throwable $th) {
