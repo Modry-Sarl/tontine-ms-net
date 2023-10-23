@@ -43,7 +43,7 @@ return [
      * 
      * @var string
      */
-    'template' => '',
+    'template' => 'email',
 
     /**
      * DSN du serveur de mail

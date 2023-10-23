@@ -9,7 +9,6 @@ use App\MS\App;
 use App\MS\Register;
 use BlitzPHP\Database\Config\Services;
 use BlitzPHP\Exceptions\ValidationException;
-use BlitzPHP\Validation\Rule;
 use Exception;
 
 class RegisterController extends AppController
@@ -125,12 +124,16 @@ class RegisterController extends AppController
                 'ua'         => $this->request->userAgent(),
             ]);
 
+            Services::event()->trigger('user:register', $registered, [
+                'password' => $register->password,
+            ]);    
+
             $db->commit();
         }
         catch(Exception $e) {
             $db->rollback();
 
-            return $this->backHTMX('dashboard/register/htmx-form-response', $e->getMessage() .  'Une erreur s\'est produite lors de l\'enregistrement Veuillez reessayer');
+            return $this->backHTMX('dashboard/register/htmx-form-response', 'Une erreur s\'est produite lors de l\'enregistrement Veuillez reessayer');
         }
 
         return $this->backHTMX('dashboard/register/htmx-form-response', 'Ajout effectué avec succès . '.$comptes_crees.' compte(s) a/ont été(s) crées', true);

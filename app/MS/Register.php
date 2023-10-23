@@ -14,7 +14,7 @@ class Register
 {
     private array $data = [];
 
-    private string $password = '';
+    public string $password = '';
     private string $password_hash = '';
 
     private ?User $user = null;
