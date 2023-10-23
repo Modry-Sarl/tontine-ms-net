@@ -32,9 +32,9 @@ return [
         'action_email_2fa_email'      => '\BlitzPHP\Schild\Views\Email\email_2fa_email',
         'action_email_activate_show'  => '\BlitzPHP\Schild\Views\email_activate_show',
         'action_email_activate_email' => '\BlitzPHP\Schild\Views\Email\email_activate_email',
-        'magic-link-login'            => '\BlitzPHP\Schild\Views\magic_link_form',
-        'magic-link-message'          => '\BlitzPHP\Schild\Views\magic_link_message',
-        'magic-link-email'            => '\BlitzPHP\Schild\Views\Email\magic_link_email',
+        'magic-link-login'            => '\App\Views\auth\magic-link-form',
+        'magic-link-message'          => '\App\Views\auth\magic-link-message',
+        'magic-link-email'            => '\App\Views\emails\magic-link-email',
     ],
 
     /**

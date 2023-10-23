@@ -24,6 +24,7 @@ use BlitzPHP\Router\RouteBuilder;
  */
 $routes->get('/', fn() => redirect()->route('dashboard'));
 
+auth()->routes($routes, ['except' => ['login', 'register', 'logout', 'auth-actions']]);
 
 Route::middleware(['guest'])->group(function(RouteBuilder $route) {
     $route->name('login')->view('/login', 'auth/login');

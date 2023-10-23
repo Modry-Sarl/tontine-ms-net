@@ -23,10 +23,20 @@
         </div>
         <?php if ($error_password = $errors->line('password')): ?><span class="small text-danger"><?= $error_password ?></span><?php endif; ?>
     </div>
+
+    <?php if (config('auth.session.allow_remembering')): ?>
+        <div class="form-check mb-3">
+            <label class="form-check-label">
+                <input type="checkbox" name="remember" class="form-check-input">
+                <?= lang('Auth.rememberMe') ?>
+            </label>
+        </div>
+    <?php endif; ?>
+
     <?php if ($error = $errors->line('default')): ?><div class="alert alert-danger"><?= $error ?></div><?php endif; ?>
     
     <button type="submit" class="btn btn-primary shadow-2 mt-1 mb-4">Se connecter</button>
-    <p class="mb-2 text-muted">Mot de passe oublié? <a href="auth-reset-password.html">Réinitiliser</a></p>
+    <p class="mb-2 text-muted">Mot de passe oublié? <a href="<?= url_to('magic-link') ?>">Réinitiliser</a></p>
 </form>
 
 <?php $this->end() ?>
