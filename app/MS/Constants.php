@@ -56,13 +56,17 @@ class Constants
 
     /**
      * Nombre de filleul requis pour un terminé un pack
-     * c'est a dire le nombre de filleul du dernier niveau du pack
      */
     public static function nbrFilleulByPack(string $pack): int
     {
         $iteration = static::getIteration($pack);
+        $nbr       = 0;
 
-        return static::nbrFilleulByNiveau($iteration);
+        for ($i = 1; $i <= $iteration; $i++) {
+            $nbr += static::nbrFilleulByNiveau($i);
+        }
+
+        return $nbr;
     }
 
     /**
