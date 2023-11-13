@@ -20,7 +20,7 @@ class Constants
     public const DOLLAR_VALUE_ENTREE = 475;
 
     public const NBR_NIVEAU    = 18;
-    public const TOTAL_FILLEUL = 65534;
+    public const TOTAL_FILLEUL = 262144;
 
     public const GAINS_NIVEAU = [
         //Argent
@@ -52,6 +52,17 @@ class Constants
     public static function nbrFilleulByNiveau(int $niveau): int 
     {
         return pow(2, $niveau);
+    }
+
+    /**
+     * Nombre de filleul requis pour un terminé un pack
+     * c'est a dire le nombre de filleul du dernier niveau du pack
+     */
+    public static function nbrFilleulByPack(string $pack): int
+    {
+        $iteration = static::getIteration($pack);
+
+        return static::nbrFilleulByNiveau($iteration);
     }
 
     /**

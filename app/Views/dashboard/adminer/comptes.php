@@ -26,7 +26,7 @@
                                 <td><img class="rounded border img-thumbnail" src="<?= $compte->user->avatar ?>" alt="" style="width:2em; height:2em;"/></td>
                                 <td><h4 class="m-0"><?= $compte->ref ?></h4></td>
                                 <td>
-                                    <?= scl_splitInt($compte->nbr_filleuls) ?> / <?= scl_splitInt(\App\MS\Constants::TOTAL_FILLEUL); ?> 
+                                    <?= scl_splitInt($compte->nbr_filleuls) ?> / <?= scl_splitInt(\App\MS\Constants::nbrFilleulByPack($_user->pack)); ?> 
                                     <br> Niveau <?= $compte->niveau . ' / ' . \App\MS\Constants::NBR_NIVEAU ?>
                                 </td>
                                 <td>
