@@ -19,26 +19,35 @@ class Constants
     public const DOLLAR_VALUE = 500;
     public const DOLLAR_VALUE_ENTREE = 475;
 
-    public const NBR_NIVEAU    = 15;
+    public const NBR_NIVEAU    = 18;
     public const TOTAL_FILLEUL = 65534;
 
     public const GAINS_NIVEAU = [
+        //Argent
         1 => 10,
         2 => 20,
         3 => 40,
         4 => 60,
         5 => 80,
-        6 => 100,
-        7 => 200,
-        8 => 400,
-        9 => 600,
-        10 => 800,
-        11 => 1000,
-        12 => 2000,
-        13 => 4000,
-        14 => 6000,
-        15 => 8000,
+        6 => 400,
+        // Or
+        7 => 100,
+        8 => 200,
+        9 => 400,
+        10 => 600,
+        11 => 800,
+        12 => 4000,
+        // Diament
+        13 => 1000,    
+        14 => 2000,
+        15 => 4000,
+        16 => 6000,
+        17 => 8000,
+        18 => 40000,
     ];
+
+    /** Rupture de niveau, c'est a dire qu'icim on ne gagne pas mais on passe a une classe suivante */
+    public const BREAK_LEVEL = [6, 12];
 
     public static function nbrFilleulByNiveau(int $niveau): int 
     {
@@ -54,9 +63,9 @@ class Constants
         $pack = strtolower($pack);
 
         if ($pack === 'argent') {
-            $iteration -= 10;
+            $iteration -= 12;
         } elseif ($pack === 'or') {
-            $iteration -= 5;
+            $iteration -= 6;
         }
 
         return $iteration;
