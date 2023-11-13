@@ -70,11 +70,12 @@ class UserModel extends SchildUserModel
             $niveau = $niveau['niveau'] ?? null;
         }
 
-        self::$filleul_niv[$user->ref] = [
-            1 => [], 2 => [], 3 => [], 4 => [], 5 => [],
-            6 => [], 7 => [], 8 => [], 9 => [], 10 => [], 
-            11 => [], 12 => [], 13 => [], 14 => [], 15 => [],
-        ];
+        $niveaux = [];
+        for ($i = 1; $i <= Constants::NBR_NIVEAU; $i++) {
+            $niveaux[$i] = [];
+        }
+
+        self::$filleul_niv[$user->ref] = $niveaux;
         
         if (empty(self::$filleul_niv[$user->ref][1])) {
             // On recupere les filleuls directs du membre
@@ -111,7 +112,7 @@ class UserModel extends SchildUserModel
             }
 		}
 
-		return in_array($niveau, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]) 
+		return in_array($niveau, array_keys(Constants::GAINS_NIVEAU)) 
             ? self::$filleul_niv[$user->ref][$niveau] 
             : self::$filleul_niv[$user->ref];
 	}
