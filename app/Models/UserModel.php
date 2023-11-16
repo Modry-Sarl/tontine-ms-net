@@ -165,8 +165,6 @@ class UserModel extends SchildUserModel
                     $user->increment('solde_principal', $montant);
                 } else if ($niveau === Constants::BREAK_LEVEL[0]) {
                     $user->pack = 'or';
-                } else if ($niveau === Constants::BREAK_LEVEL[1]) {
-                    $user->pack = 'diamant';
                 }
             }
 

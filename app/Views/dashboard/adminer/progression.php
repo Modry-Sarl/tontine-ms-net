@@ -91,8 +91,7 @@
                 <table class="w-100 table table-condensed table-bordered">
 					<tbody>
                         <tr class="bg-success text-white"><td class="font-weight-bold h5">Argent</td></tr>
-                        <tr class="<?= $_user->niveau >= \App\MS\Constants::BREAK_LEVEL[0] && $_user->niveau < \App\MS\Constants::BREAK_LEVEL[1] ? 'bg-success text-white' : '' ?>"><td class="font-weight-bold h5">Or</td></tr>
-                        <tr class="<?= $_user->niveau >= \App\MS\Constants::BREAK_LEVEL[1] ? 'bg-success text-white' : '' ?>"><td class="font-weight-bold h5">Diamant</td></tr>
+                        <tr class="<?= $_user->niveau >= \App\MS\Constants::BREAK_LEVEL[0] ? 'bg-success text-white' : '' ?>"><td class="font-weight-bold h5">Or</td></tr>
                     </tbody>
 				</table>
 			</div>
