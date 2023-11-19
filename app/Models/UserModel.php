@@ -36,6 +36,7 @@ class UserModel extends SchildUserModel
                              'ref'                                      => $login
                 ]);    
             })
+            ->sortDesc('utilisateurs.main')
             ->first(PDO::FETCH_ASSOC);
 
         if ($data === null) {
