@@ -47,7 +47,7 @@ abstract class AppController extends ApplicationController
         if (auth()->loggedIn()) {
             $this->user = User::with(['utilisateur' => function($q) {
                 $q->with(['notifications' => fn($q) => $q->where('lu', 0)->limit(5) ]);
-            }])->find(auth()->user()->id);
+            }])->sortDesc('main')->find(auth()->user()->id);
 
             $this->user->email = auth()->user()->email;
 
