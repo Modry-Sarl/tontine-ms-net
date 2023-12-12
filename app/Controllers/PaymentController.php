@@ -50,7 +50,7 @@ class PaymentController extends AppController
             'montant'                 => $amount,
             'frais'                   => to_dollar($details['fee'], 'entree'),
             'type'                    => 'entree',
-            'status'                  => $status ?: $details['status'],
+            'statut'                  => $status ?: $details['status'],
             'message'                 => $details['message'],
             'operateur'               => $details['operator'],
             'referencee'              => $details['transaction_id'],
