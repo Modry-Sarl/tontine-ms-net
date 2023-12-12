@@ -16,8 +16,9 @@
         }
     },
     "require": {
-        "blitz-php/framework": "^0.8",
-        "blitz-php/schild": "^1.2"
+        "blitz-php/framework": "dev-main",
+        "blitz-php/schild": "dev-main",
+        "laminas/laminas-escaper": "^2.13"
     },
     "prefer-stable": true,
     "config": {

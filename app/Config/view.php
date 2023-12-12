@@ -42,6 +42,24 @@ return [
      */
     'debug' => 'auto',
 
+    /**
+     * Données partagées à toutes les vues
+     */
+    'shared' => function(): array {
+        return [
+
+        ];
+    },
+
+    /**
+     * Les decorateurs de vues sont des méthodes de classe qui seront exécutées en séquence pour avoir la possibilité de modifier la sortie générée juste avant la mise en cache des résultats.
+     *
+     * Toutes les classes doivent implémenter BlitzPHP\View\ViewDecoratorInterface
+     *
+     * @var classe-string<\BlitzPHP\View\ViewDecoratorInterface>[]
+      */
+    'decorators' => [],
+
     'adapters' => [
         /**
          * [Configuration Native]

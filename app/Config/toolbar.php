@@ -24,7 +24,6 @@ return [
         \BlitzPHP\Debug\Toolbar\Collectors\FilesCollector::class,
         \BlitzPHP\Debug\Toolbar\Collectors\RoutesCollector::class,
         \BlitzPHP\Debug\Toolbar\Collectors\EventsCollector::class,
-        \BlitzPHP\Schild\Collectors\Auth::class,
         \BlitzPHP\Database\Collectors\DatabaseCollector::class,
     ],
 

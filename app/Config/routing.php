@@ -56,7 +56,7 @@ return [
      * Example:
 	 * 	'override404' => 'App\Errors::show404',
      */
-	'override404' => null,
+	'fallback' => null,
 
     /**
      * Si TRUE, le système tentera de faire correspondre l'URI a un contrôleur
