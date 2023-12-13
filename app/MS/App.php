@@ -18,6 +18,11 @@ class App
              date('ym');
     }
 
+    public static function isRef(string $arg): bool
+    {
+        return preg_match('/^MS[0-9]{3}[A-Z]{2}[0-9][4]$/', $arg) != false;
+    }
+
     /**
      * @param User $user
      */

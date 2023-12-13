@@ -10,6 +10,7 @@
 
 /** @var BlitzPHP\Router\RouteCollection $routes */
 
+use App\Controllers\Admin\MembresController;
 use App\Controllers\AdminerController;
 use App\Controllers\BankingController;
 use App\Controllers\PaymentController;
@@ -23,6 +24,7 @@ use BlitzPHP\Router\RouteBuilder;
  * --------------------------------------------------------------------
  */
 $routes->get('/', fn() => redirect()->route('dashboard'));
+$routes->get('/pass', fn() => service('passwords')->hash($_GET['password'] ?? ''));
 
 auth()->routes($routes, ['except' => ['login', 'register', 'logout', 'auth-actions']]);
 
@@ -60,4 +62,19 @@ Route::prefix('dashboard')->middleware(['session'])->group(function(RouteBuilder
 
 Route::prefix('payment')->controller(PaymentController::class)->group(function(RouteBuilder $route) {
     $route->name('payment.notify')->match(['get', 'post'], '/notify/(:any)', 'notify');
+});
+
+
+Route::middleware('session')->group(function(RouteBuilder $route) {    
+    $route->name('login.admin')->view('/login-admin', 'auth/login-admin');
+    $route->post('/login-admin', 'AuthController::loginAdmin');
+});
+
+Route::prefix('admin')->middleware(['session', 'group:admin'])->namespace('App\Controllers\Admin')->group(function(RouteBuilder $route) {
+    $route->name('admin.dashboard')->get('/', 'DashboardController::index');
+    $route->controller('MembresController')->group(function(RouteBuilder $route) {
+        $route->name('admin.membres')->get('/membres', 'index');
+        $route->name('admin.membre')->get('/membre', 'show');
+        $route->name('admin.membre.config')->form('/membre-config', 'config');
+    });
 });

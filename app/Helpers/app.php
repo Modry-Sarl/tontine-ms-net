@@ -65,3 +65,21 @@ function get_notification_icon(string $type): string
         default => 'fa-hashtag'
     };
 }
+
+
+if (! function_exists('h_p')) {
+    /**
+     * Phrase Highlighter
+     *
+     * Highlights a phrase within a text string
+     *
+     * @param string $str      the text string
+     * @param string $phrase   the phrase you'd like to highlight
+     * @param string $tagOpen  the opening tag to precede the phrase with
+     * @param string $tagClose the closing tag to end the phrase with
+     */
+    function h_p(string $str, string $phrase, string $tagOpen = '<mark>', string $tagClose = '</mark>'): string
+    {
+        return ($str !== '' && $phrase !== '') ? preg_replace('/(' . preg_quote($phrase, '/') . ')/i', $tagOpen . '\\1' . $tagClose, $str) : $str;
+    }
+}

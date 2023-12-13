@@ -69,5 +69,5 @@ return [
      * 
      * @var bool 
      */
-    'show_debugbar' => true,
+    'show_debugbar' => false,
 ];

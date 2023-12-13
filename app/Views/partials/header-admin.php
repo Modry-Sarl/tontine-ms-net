@@ -12,49 +12,11 @@
     <div class="collapse navbar-collapse theme-bg">
         <div class="mr-auto text-center" style="flex: 1">
             <h1 translate="no" class="notranslate titre-principal">
-				<span class="d-none d-lg-block">Gestionnaire de compte</span>
-				<span class="d-block d-lg-none">Backoffice</span>
+				<span class="d-none d-lg-block">TONTINE MS-NET : Centre d'administration</span>
+				<span class="d-block d-lg-none">Centre d'administration</span>
 			</h1>
         </div>
         <ul class="navbar-nav ml-auto">
-            <li>
-                <div class="dropdown">
-                    <a class="dropdown-toggle" href="javascript:" data-toggle="dropdown"><i class="icon feather icon-bell"></i></a>
-                    <div class="dropdown-menu dropdown-menu-right notification">
-                        <div class="noti-head">
-                            <h6 class="d-inline-block m-b-0">Notifications</h6>
-                        </div>
-                        <ul class="noti-body">
-                            <?php if (1 > $_user->utilisateur->notifications->count()): ?>
-                            <p class="text-center">
-                                Aucune nouvelle notification pour le moment.
-                                <br/>
-                                Vous serez informé lorsque des notifications seront diponible.
-                            </p>
-                            <?php else: foreach ($_user->utilisateur->notifications as $notification): ?>
-                            <li class="notification">
-                                <div class="media">
-                                    <div style="width: 2em; height: 2em" class="mr-2 rounded-circle theme-bg d-flex justify-content-center align-items-center">
-                                        <i class="text-white fa <?= get_notification_icon($notification->type) ?>"></i>
-                                    </div>
-                                    <div class="media-body">
-                                        <p>
-                                            <strong><?= $notification->libelle ?></strong>
-                                            <span class="n-time text-muted"><i class="icon feather icon-clock m-r-10"></i> <?= $notification->created_at->format('d/m/Y') ?></span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </li>
-                            <?php endforeach; endif; ?>
-                        </ul>
-                        <?php if ($total_notifications > 0): ?>
-                        <div class="noti-footer">
-                            <a href="<?= link_to('notifications') ?>">Voir toutes les <b><?= $total_notifications ?></b> notifications</a>
-                        </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </li>
             <li>
                 <div class="dropdown drp-user">
                     <a href="javascript:" class="dropdown-toggle" data-toggle="dropdown">
@@ -75,10 +37,8 @@
                             <li><a href="javascript:" class="dropdown-item"><i class="feather icon-settings"></i> Paramètres</a></li>
                             <li><a href="javascript:" class="dropdown-item"><i class="feather icon-file"></i> Log des activités</a></li>
                             <li class="dropdown-divider"></li>
-                        <?php if ($_user->inGroup('admin')): ?>
-                            <li><a href="<?= link_to('admin.dashboard') ?>" class="dropdown-item" target="_blank"><i class="feather icon-settings"></i> Administration</a></li>
+                            <li><a href="<?= link_to('dashboard') ?>" class="dropdown-item" target="_blank"><i class="feather icon-home"></i> Backoffice</a></li>
                             <li class="dropdown-divider"></li>
-                        <?php endif; ?>
                             <li><form class="d-inline" method="post" action="<?= link_to('logout') ?>">
                                 <input type="hidden" name="_method" value="delete" />
                                 <a class="dropdown-item" href="<?= link_to('logout') ?>" onclick="event.preventDefault(); this.closest('form').submit();">

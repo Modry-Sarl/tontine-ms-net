@@ -9,6 +9,7 @@ use BlitzPHP\View\View;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
+use ReflectionClass;
 
 /**
  * AppController fournit un emplacement pratique pour charger des composants et exécuter des fonctions nécessaires à tous vos contrôleurs.
@@ -44,26 +45,36 @@ abstract class AppController extends ApplicationController
 
     protected function getLoggedUser() 
     {
+        
+        
         if (auth()->loggedIn()) {
-            $this->user = User::with(['utilisateur' => function($q) {
-                $q->sortDesc('main');
-                $q->with(['notifications' => fn($q) => $q->where('lu', 0)->limit(5) ]);
-            }])->find(auth()->user()->id);
+            $reflection = new ReflectionClass($this);
+            if (str_starts_with($reflection->getNamespaceName(), 'App\Controllers\Admin')) {
+                $this->user = User::with(['utilisateur' => function($q) {
+                    $q->sortDesc('main');
+                }])->find(auth()->id());
+            } else {
+                $this->user = User::with(['utilisateur' => function($q) {
+                    $q->sortDesc('main');
+                    $q->with(['notifications' => fn($q) => $q->where('lu', 0)->limit(5) ]);
+                }])->find(auth()->id());
+                
+                $total_notifications = $this->user->utilisateur->notifications()->count();
+                View::share('total_notifications', $total_notifications);
+            }
 
             $this->user->email = auth()->user()->email;
 
-            $total_notifications = $this->user->utilisateur->notifications()->count();
             View::share('_user', $this->user);
-            View::share('total_notifications', $total_notifications);
         }
     }
 
     /**
      * Renvoie le nombre d'interation pour l'affichage de la progression en fonction du pack actuel de l'utilisateur.
      */
-    protected function getIteration(): int 
+    protected function getIteration(?string $pack = null): int 
     {
-        return Constants::getIteration($this->user->pack);
+        return Constants::getIteration($pack ?: $this->user->pack);
     }
     
 

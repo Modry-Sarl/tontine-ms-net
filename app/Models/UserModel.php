@@ -126,8 +126,12 @@ class UserModel extends SchildUserModel
             $filleuls = $this->listFilleuls($user, $niveau, false);
         }
 
-        
-        if(Arr::dimensions($filleuls) == 1) {
+        return $this->makeCountFilleuls($filleuls);
+    }
+
+    public function makeCountFilleuls(array $filleuls): int
+    {
+        if (Arr::dimensions($filleuls) == 1) {
             $filleuls = [$filleuls];
         }
         

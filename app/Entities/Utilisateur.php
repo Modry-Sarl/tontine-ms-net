@@ -26,6 +26,7 @@ class Utilisateur extends Model
 
     private $_nbr_filleuls  = null;
     private $_list_filleuls = null;
+    private $_gains_cumules = null;
 
     public function user() 
     {
@@ -53,7 +54,7 @@ class Utilisateur extends Model
 
     public function filleuls()
     {
-        return $this->hasMany(self::class, 'parrain', 'ref');
+        return $this->hasMany(self::class, 'parrain', 'ref')->with('user');
     }
 
     public function referer()
@@ -77,5 +78,14 @@ class Utilisateur extends Model
         }
 
         return $this->_nbr_filleuls;
+    }
+
+    public function getGainsCumulesAttribute()
+    {
+        if (null === $this->_gains_cumules) {
+            $this->_gains_cumules = $this->gains->map(fn($gain) => $gain->montant_recu)->sum();
+        }
+
+        return $this->_gains_cumules;
     }
 }

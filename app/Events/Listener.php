@@ -7,6 +7,7 @@ use BlitzPHP\Contracts\Event\EventInterface;
 use BlitzPHP\Contracts\Event\EventListenerInterface;
 use BlitzPHP\Contracts\Event\EventManagerInterface;
 use BlitzPHP\Database\Config\Services;
+use BlitzPHP\Wolke\Pagination\Paginator;
 
 class Listener implements EventListenerInterface
 {	
@@ -26,5 +27,10 @@ class Listener implements EventListenerInterface
 				])
 				->send();
 		});
+
+		$event->attach('pre_system', function () {
+            Paginator::viewFactoryResolver(fn() => Services::viewer());
+			Paginator::useBootstrap();
+        });
 	}
 }
