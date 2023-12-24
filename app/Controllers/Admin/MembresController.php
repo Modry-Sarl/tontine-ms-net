@@ -191,9 +191,11 @@ class MembresController extends AppController
                     $permut      = Utilisateur::where('ref', $validated['permut'])->first();
                     $tmp         = $permut->ref;
                     $permut->ref = $user->ref;
-                    $user->ref   = $tmp;
+                    $user->ref   = '';
                     $user->save();
                     $permut->save();
+                    $user->ref   = $tmp;
+                    $user->save();
                 }
             }
 
