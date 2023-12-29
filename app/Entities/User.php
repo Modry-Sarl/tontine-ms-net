@@ -56,6 +56,10 @@ class User extends SchildUser
             return $v;
         }
 
-        return $this->utilisateur->{$key};
+        if (isset($this->utilisateur) && $this->utilisateur !== null) {
+            return $this->utilisateur->{$key};
+        }
+
+        return null;
     }
 }
