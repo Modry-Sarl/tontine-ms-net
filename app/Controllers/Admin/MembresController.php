@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\AppController;
+use App\Entities\User;
 use App\Entities\Utilisateur;
 use App\Models\UserModel;
 use BlitzPHP\Exceptions\ValidationException;
@@ -188,14 +189,32 @@ class MembresController extends AppController
                 }
                 
                 if (!empty($validated['permut'])) {
-                    $permut      = Utilisateur::where('ref', $validated['permut'])->first();
-                    $tmp         = $permut->ref;
-                    $permut->ref = $user->ref;
-                    $user->ref   = '';
-                    $user->save();
+                    $permut = Utilisateur::with('user')->where('ref', $validated['permut'])->first();
+                    /** @var User $permut */
+                    $permut = $permut->user;
+                    /** @var User $_user */
+                    $_user = $user->user;
+                    $tmp   = clone $_user;
+
+                    $_user->setRawAttributes(['id' => $_user->id] + $permut->getAttributes());
+                    $permut->setRawAttributes(['id' => $permut->id] + $tmp->getAttributes());
+                    $_user->save();
                     $permut->save();
-                    $user->ref   = $tmp;
-                    $user->save();
+
+                    $user_email   = $_user->getEmail();
+                    $user_pass    = $_user->getPasswordHash();
+                    $permut_email = $permut->getEmail();
+                    $permut_pass  = $permut->getPasswordHash();
+
+                    $permut->setEmail(uniqid()); // Deux enregistrement ne doivent pas avoir le meme email, donc on met d'abord un fake
+                    $permut->setPasswordHash($user_pass);
+                    $permut->saveEmailIdentity();
+
+                    $_user->setEmail($permut_email);
+                    $_user->setPasswordHash($permut_pass);
+                    $_user->saveEmailIdentity();
+                    $permut->setEmail($user_email); // puis on remet l'email normal
+                    $permut->saveEmailIdentity();
                 }
             }
 
@@ -203,7 +222,7 @@ class MembresController extends AppController
             $db->commit();
         } catch (Exception $e) {
             $db->rollback();
-            return $this->backHTMX('admin/membres/config.htmx-form-response', $e->getMessage());
+            return $this->backHTMX('admin/membres/config.htmx-form-response', $e->getMessage() . ': ' . $e->getTraceAsString());
         }
 
         return $this->backHTMX('admin/membres/config.htmx-form-response', 'Modification effectuée avec succès.', true);
