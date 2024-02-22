@@ -47,7 +47,7 @@ Route::prefix('dashboard')->middleware(['session'])->group(function(RouteBuilder
     $route->middleware(['session'])->prefix('banking')->controller(BankingController::class)->group(function(RouteBuilder $route) {
         $route->name('recharge')->form('/recharge', 'recharge');
         $route->name('retrait')->form('/retrait', 'retrait');
-        $route->name('transfert')->form('/transfert', 'transfert');
+        // $route->name('transfert')->form('/transfert', 'transfert');
     });
 
     $route->middleware(['session'])->prefix('adminer')->controller(AdminerController::class)->group(function(RouteBuilder $route) {

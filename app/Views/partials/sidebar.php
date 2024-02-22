@@ -42,7 +42,7 @@
                     <ul class="pcoded-submenu">
                         <li class="<?= link_active('retrait') ?>"><a class="" href="<?= link_to('retrait') ?>">Effectuez un retrait</a></li>
                         <li class="<?= link_active('recharge') ?>"><a class="" href="<?= link_to('recharge') ?>">Rechargez votre compte</a></li>
-                        <li class="<?= link_active('transfert') ?>"><a class="" href="<?= link_to('transfert') ?>">Faire un transfert MS</a></li>
+                        <!-- <li class="< ?= link_active('transfert') ?>"><a class="" href="< ?= link_to('transfert') ?>">Faire un transfert MS</a></li> -->
                         <li class="<?= link_active('transactions') ?>"><a class="" href="<?= link_to('transactions') ?>">Recap des transactions</a></li>
                     </ul>
                 </li>
