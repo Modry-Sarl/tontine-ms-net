@@ -30,7 +30,7 @@
                 </div>
                 <div class="form-group">
                     <label>Numéro de bénéficiaire <small class="text-danger">*</small></label>
-                    <input type="tel" name="tel" value="<?= old('tel', simple_tel($_user->tel)) ?>" autocomplete="off" class="form-control" placeholder="Ex: 677889900" />
+                    <input type="tel" name="tel" disabled value="<?= simple_tel($_user->tel) ?>" autocomplete="off" class="form-control" placeholder="Ex: 677889900" />
                     <small class="form-text text-muted">Au format local (sans indicatif)</small>
                 </div>
                 <div class="form-group">

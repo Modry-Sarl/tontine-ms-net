@@ -106,7 +106,7 @@ class BankingController extends AppController
             $validated = $this->validate([
                 'montant'  => ['required', 'numeric', 'min:1', 'max:2000'],
                 'compte'   => ['required', 'in:principal,recharge'],
-                'tel'      => ['required', 'phone:cm', 'min:1', 'max:2000'],
+                // 'tel'      => ['required', 'phone:cm'],
                 'password' => ['required', 'current_password'],
             ], [
                 'montant:required'          => 'Veuillez indiquer le montant à retirer',
@@ -141,7 +141,8 @@ class BankingController extends AppController
 
             $sender = Payment::send([
                 'amount' => $montant,
-                'phone'  => simple_tel($validated['tel']),
+                // 'phone'  => simple_tel($validated['tel']),
+                'phone'  => simple_tel($this->user->tel),
             ], $this->request->boolean('eum'));
             
 		    if (empty($sender) || !is_array($sender) || !isset($sender['success']) || $sender['success'] == false) {
