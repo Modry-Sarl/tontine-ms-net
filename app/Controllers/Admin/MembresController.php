@@ -6,13 +6,13 @@ use App\Controllers\AppController;
 use App\Entities\User;
 use App\Entities\Utilisateur;
 use App\Models\UserModel;
+use App\MS\App;
+use App\Services\Registration;
 use BlitzPHP\Exceptions\ValidationException;
 use Exception;
 
 class MembresController extends AppController
 {
-    protected $helpers = ['scl'];
-
     public function index()
     {
         $data['search'] = $search = $this->request->search;
@@ -76,7 +76,6 @@ class MembresController extends AppController
     {
         $data['ref'] = $this->request->ref;
         $data['tab'] = $this->request->data('tab', 'profil');
-        $model = model(UserModel::class);
 
         if (! empty($data['ref'])) {
             $user = Utilisateur::with(['user'])->where('ref', $data['ref'])->first();
@@ -226,5 +225,23 @@ class MembresController extends AppController
         }
 
         return $this->backHTMX('admin/membres/config.htmx-form-response', 'Modification effectuée avec succès.', true);
+    }
+
+    public function formAdd()
+    {
+        return $this->render('add');
+    }
+
+    public function processAdd($_, Registration $registrationService)
+    {
+        try {
+           $comptes_crees = $registrationService->register($this->request, $this->user, true);
+        } catch (Exception $e) {
+            $message = $e instanceof ValidationException ? $e->getErrors()->all() : $e->getMessage();
+            
+            return $this->backHTMX('admin/membres/config.htmx-form-response', $message);
+        }
+
+        return $this->backHTMX('admin/membres/config.htmx-form-response', 'Ajout effectué avec succès . '.$comptes_crees.' compte(s) a/ont été(s) crées', true);
     }
 }
