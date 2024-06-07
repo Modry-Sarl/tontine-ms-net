@@ -77,4 +77,7 @@ Route::prefix('admin')->middleware(['session', 'group:admin'])->namespace('App\C
         $route->name('admin.membre')->get('/membre', 'show');
         $route->name('admin.membre.config')->form('/membre-config', 'config');
     });
+    $route->controller('TransactionsController')->group(function(RouteBuilder $route) {
+        $route->name('admin.transactions.approbations')->form('/approbations', 'approbations');
+    });
 });

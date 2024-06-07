@@ -46,7 +46,7 @@
                         <li class="<?= link_active('admin.admin.add') ?>"><a class="" href="<?= link_to('admin.admin.add') ?>">Ajout d'administrateur</a></li>
                     </ul>
                 </li>
-                <li class="nav-item pcoded-hasmenu <?= link_active(['admin.transactions.credit', 'admin.transactions.sorties', 'admin.transactions.entrees'], 'active pcoded-trigger') ?>">
+                <li class="nav-item pcoded-hasmenu <?= link_active(['admin.transactions.credit', 'admin.transactions.sorties', 'admin.transactions.entrees', 'admin.transactions.approbations'], 'active pcoded-trigger') ?>">
                     <a href="javascript:" class="nav-link ">
                         <span class="pcoded-micon"><i class="fa fa-fw fa-exchange-alt"></i></span>
                         <span class="pcoded-mtext notranslate" translate="no">Transactions</span>
@@ -55,6 +55,7 @@
                         <li class="<?= link_active('admin.transactions.credit') ?>"><a class="" href="<?= link_to('admin.transactions.credit') ?>">Créditer/Débiter un compte</a></li>
                         <li class="<?= link_active('admin.transactions.sorties') ?>"><a class="" href="<?= link_to('admin.transactions.sorties') ?>">Sorties de fonds</a></li>
                         <li class="<?= link_active('admin.transactions.entrees') ?>"><a class="" href="<?= link_to('admin.transactions.entrees') ?>">Entrées de fonds</a></li>
+                        <li class="<?= link_active('admin.transactions.approbations') ?>"><a class="" href="<?= link_to('admin.transactions.approbations') ?>">Demandes de retraits</a></li>
                     </ul>
                 </li>
             </ul>

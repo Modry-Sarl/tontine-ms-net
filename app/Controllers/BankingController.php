@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Entities\Retrait;
 use App\Entities\Transaction;
 use App\Entities\Utilisateur;
 use App\MS\Payment;
@@ -125,52 +126,30 @@ class BankingController extends AppController
             return $this->backHTMX('dashboard/banking/htmx-form-retrait', $e->getErrors()->all());
         }
         
-        $solde = 'solde_' . $validated['compte'];
-		if ($validated['montant'] > $this->user->{$solde}) {
+        if ($validated['montant'] > $this->user->{'solde_' . $validated['compte']}) {
             return $this->backHTMX('dashboard/banking/htmx-form-retrait', 'Votre solde '.$validated['compte'].' est insuffisant');
 		}
         
-        $db = Services::database();
-    
         try {
-            $db->beginTransaction();
-           
-            $this->user->utilisateur->decrement($solde, $validated['montant']);
-            
-            $montant = to_cfa($validated['montant']);
-
-            $sender = Payment::send([
-                'amount' => $montant,
-                // 'phone'  => simple_tel($validated['tel']),
-                'phone'  => simple_tel($this->user->tel),
-            ], $this->request->boolean('eum'));
-            
-		    if (empty($sender) || !is_array($sender) || !isset($sender['success']) || $sender['success'] == false) {
-                throw new Exception('Une erreur s\'est produite lors du transfert. [' . (($sender ?? [])['message'] ?? ''). ']');
-		    }
-            
-            Transaction::create([
-                'user_id'                 => $this->user->utilisateur->id,
-                'numero'                  => substr($sender['phonenumber'], 3, 9),
-                'montant'                 => to_dollar($montant ?? $sender['amount']),
-                'frais'                   => 0,
-                'type'                    => 'sortie',
-                'statut'                  => in_array($sender['success'], ['1', 1]),
-                'message'                 => $sender['message'],
-                'operateur'               => $sender['operator'] ?? '',
-                'operator_transaction_id' => $sender['operator_transaction_id'],
-                'ip'                      => $this->request->clientIp(),
-                'ua'                      => $this->request->userAgent(),
-                'dt'                      => date('Y-m-d H:i:s'),
+            $reference = Retrait::generateReference($this->user->utilisateur, [
+                'compte'   => $validated['compte'],
+                'montant'  => $validated['montant'],
+                'tel'      => $validated['tel'] ?? $this->user->tel,
+                'meta' => [
+                    'use_eum' => $this->request->boolean('eum'),
+                    'ip'      => $this->request->clientIp(),
+                    'ua'      => $this->request->userAgent(),
+                    'dt'      => date('Y-m-d H:i:s'),
+                ]
             ]);
-
-            $db->commit();
         } catch (Exception $e) {
-            $db->rollback();
             return $this->backHTMX('dashboard/banking/htmx-form-retrait', $e->getMessage());
         }
 
-        return $this->backHTMX('dashboard/banking/htmx-form-retrait', 'Retrait effectué avec succès.', true);
+        return $this->backHTMX('dashboard/banking/htmx-form-retrait', 
+            'Transaction initiée avec succès. Un administration approuvera votre retrait d\'ici peu. Merci de patienter. La reference de votre opération est <b>'.$reference.'</b>',
+            true
+        );
     } 
 
     /**

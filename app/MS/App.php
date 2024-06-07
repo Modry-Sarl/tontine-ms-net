@@ -3,19 +3,30 @@
 namespace App\MS;
 
 use App\Entities\User;
+use BlitzPHP\Wolke\Model;
+use InvalidArgumentException;
 
 class App
 {
 
-    public static function generateIdUser(): string
+    public static function generateRef(string $class): string
     {
-        $totalUser = User::withTrashed()->count();
-        $letters   = range('A', 'Z');
+        if (!is_a($class, Model::class, true)) {
+            throw new InvalidArgumentException('Classe d\'entite invalide. Impossible de generer une reference');
+        }
+
+        $total   = method_exists($class, 'withTrashed') ? $class::withTrashed()->count() : $class::count();
+        $letters = range('A', 'Z');
 
         return 
-            'MS' . str_pad(++$totalUser, 3, "0", STR_PAD_LEFT) .
+            'MS' . str_pad(++$total, 3, "0", STR_PAD_LEFT) .
              $letters[array_rand($letters)] . $letters[array_rand($letters)] . 
              date('ym');
+    }
+
+    public static function generateIdUser(): string
+    {
+        return self::generateRef(User::class);
     }
 
     public static function isRef(string $arg): bool
