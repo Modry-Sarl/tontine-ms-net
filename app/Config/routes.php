@@ -16,7 +16,6 @@ use App\Controllers\BankingController;
 use App\Controllers\PaymentController;
 use App\Controllers\RegisterController;
 use BlitzPHP\Facades\Route;
-use BlitzPHP\Router\RouteBuilder;
 
 /**
  * --------------------------------------------------------------------
@@ -28,57 +27,55 @@ $routes->get('/pass', fn() => service('passwords')->hash($_GET['password'] ?? ''
 
 auth()->routes($routes, ['except' => ['login', 'register', 'logout', 'auth-actions']]);
 
-Route::middleware(['guest'])->group(function(RouteBuilder $route) {
-    $route->name('login')->view('/login', 'auth/login');
-    $route->post('/login', 'AuthController::login');
+Route::middleware(['guest'])->group(function() {
+    Route::name('login')->view('/login', 'auth/login');
+    Route::post('/login', 'AuthController::login');
 });
 
 Route::name('logout')->delete('/logout', 'AuthController::logout');
 
-Route::prefix('dashboard')->middleware(['session'])->group(function(RouteBuilder $route) {
-    $route->name('dashboard')->get('/', 'DashboardController::index');
-
-    $route->middleware(['session'])->prefix('register')->controller(RegisterController::class)->group(function(RouteBuilder $route) {
-        $route->name('register')->get('/', 'form');
-        $route->name('inscriptions')->get('/inscriptions', 'inscriptions');
-        $route->post('/', 'process');
-    });
-
-    $route->middleware(['session'])->prefix('banking')->controller(BankingController::class)->group(function(RouteBuilder $route) {
-        $route->name('recharge')->form('/recharge', 'recharge');
-        $route->name('retrait')->form('/retrait', 'retrait');
-        // $route->name('transfert')->form('/transfert', 'transfert');
-    });
-
-    $route->middleware(['session'])->prefix('adminer')->controller(AdminerController::class)->group(function(RouteBuilder $route) {
-        $route->name('infos')->get('/infos', 'infos');
-        $route->name('progression')->get('/progression', 'progression');
-        $route->name('comptes')->get('/comptes', 'comptes');
-        $route->name('filleuls')->get('/filleuls', 'filleuls');
-        $route->name('arbre-filleul')->match(['get', 'post'], '/filleuls/arbre', 'arbre');
-    });
+Route::prefix('payment')->controller(PaymentController::class)->group(function() {
+    Route::name('payment.notify')->match(['get', 'post'], '/notify/(:any)', 'notify');
 });
 
+Route::middleware('session')->group(function() {    
+    Route::name('login.admin')->view('/login-admin', 'auth/login-admin');
+    Route::post('/login-admin', 'AuthController::loginAdmin');
+    
+    Route::prefix('dashboard')->group(function() {
+        Route::name('dashboard')->get('/', 'DashboardController::index');
 
-Route::prefix('payment')->controller(PaymentController::class)->group(function(RouteBuilder $route) {
-    $route->name('payment.notify')->match(['get', 'post'], '/notify/(:any)', 'notify');
-});
+        Route::prefix('register')->controller(RegisterController::class)->group(function() {
+            Route::name('register')->get('/', 'form');
+            Route::name('inscriptions')->get('/inscriptions', 'inscriptions');
+            Route::post('/', 'process');
+        });
 
+        Route::prefix('banking')->controller(BankingController::class)->group(function() {
+            Route::name('recharge')->form('/recharge', 'recharge');
+            Route::name('retrait')->form('/retrait', 'retrait');
+            // Route::name('transfert')->form('/transfert', 'transfert');
+        });
 
-Route::middleware('session')->group(function(RouteBuilder $route) {    
-    $route->name('login.admin')->view('/login-admin', 'auth/login-admin');
-    $route->post('/login-admin', 'AuthController::loginAdmin');
-});
-
-Route::prefix('admin')->middleware(['session', 'group:admin'])->namespace('App\Controllers\Admin')->group(function(RouteBuilder $route) {
-    $route->name('admin.dashboard')->get('/', 'DashboardController::index');
-    $route->controller('MembresController')->group(function(RouteBuilder $route) {
-        $route->name('admin.membres')->get('/membres', 'index');
-        $route->name('admin.membre')->get('/membre', 'show');
-        $route->name('admin.membre.config')->form('/membre-config', 'config');
-        $route->name('admin.membre.add')->form('/membre-add', 'add');
+        Route::prefix('adminer')->controller(AdminerController::class)->group(function() {
+            Route::name('infos')->get('/infos', 'infos');
+            Route::name('progression')->get('/progression', 'progression');
+            Route::name('comptes')->get('/comptes', 'comptes');
+            Route::name('filleuls')->get('/filleuls', 'filleuls');
+            Route::name('arbre-filleul')->match(['get', 'post'], '/filleuls/arbre', 'arbre');
+        });
     });
-    $route->controller('TransactionsController')->group(function(RouteBuilder $route) {
-        $route->name('admin.transactions.approbations')->form('/approbations', 'approbations');
+
+    Route::prefix('admin')->middleware('group:admin')->namespace('App\Controllers\Admin')->group(function() {
+        Route::name('admin.dashboard')->get('/', 'DashboardController::index');
+        Route::controller('MembresController')->group(function() {
+            Route::name('admin.membres')->get('/membres', 'index');
+            Route::name('admin.membre')->get('/membre', 'show');
+            Route::name('admin.membre.config')->form('/membre-config', 'config');
+            Route::name('admin.membre.add')->form('/membre-add', 'add');
+        });
+        Route::controller('TransactionsController')->group(function() {
+            Route::name('admin.transactions.approbations')->form('/approbations', 'approbations');
+        });
     });
 });

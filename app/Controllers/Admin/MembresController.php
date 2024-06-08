@@ -39,7 +39,7 @@ class MembresController extends AppController
     public function show()
     {
         $data['ref'] = $this->request->ref;
-        $data['tab'] = $this->request->data('tab', 'generalites');
+        $data['tab'] = $this->request->string('tab', 'generalites');
         $model = model(UserModel::class);
 
         if (! empty($data['ref'])) {
@@ -75,7 +75,7 @@ class MembresController extends AppController
     public function formConfig()
     {
         $data['ref'] = $this->request->ref;
-        $data['tab'] = $this->request->data('tab', 'profil');
+        $data['tab'] = $this->request->string('tab', 'profil');
 
         if (! empty($data['ref'])) {
             $user = Utilisateur::with(['user'])->where('ref', $data['ref'])->first();
@@ -90,7 +90,7 @@ class MembresController extends AppController
 
     public function processConfig()
     {
-        $tab = $this->request->data('tab', 'profil');
+        $tab = $this->request->string('tab', 'profil');
 
         if (empty($tab) || !in_array($tab, ['profil', 'access', 'identity', 'permutation'])) {
             return redirect()->back();
@@ -232,7 +232,7 @@ class MembresController extends AppController
         return $this->render('add');
     }
 
-    public function processAdd($_, Registration $registrationService)
+    public function processAdd(Registration $registrationService)
     {
         try {
            $comptes_crees = $registrationService->register($this->request, $this->user, true);

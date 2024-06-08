@@ -31,7 +31,7 @@ class RegisterController extends AppController
     /**
      * Traitement de l'inscription d'un membre
      */
-    public function process($_, Registration $registrationService)
+    public function process(Registration $registrationService)
     {
         try {
             $comptes_crees = $registrationService->register($this->request, $this->user, false);
