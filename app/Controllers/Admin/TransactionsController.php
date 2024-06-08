@@ -46,6 +46,12 @@ class TransactionsController extends AppController
             $db->beginTransaction();
             
             if ($validated['action'] === 'validated') {
+                if ($retrait->montant > $retrait->user->{'solde_' . $retrait->compte}) {
+                    $rejected_reason     = 'Retrait rejété car le solde ' . $retrait->compte . ' de l\'utilisateur est insuffisant';
+                    $validated['action'] = 'rejected';
+                    goto update_retrait;
+                }
+
                 $retrait->user->decrement('solde_' . $retrait->compte, $retrait->montant);
                 
                 $montant = to_cfa($retrait->montant);
@@ -74,10 +80,12 @@ class TransactionsController extends AppController
                 ]);
             }
         
+            update_retrait: 
             $retrait->update([
-                'statut'     => $validated['action'],
-                'process_at' => date('Y-m-d H:i:s'),
-                'process_by' => $this->user->utilisateur->id,
+                'statut'          => $validated['action'],
+                'process_at'      => date('Y-m-d H:i:s'),
+                'process_by'      => $this->user->utilisateur->id,
+                'rejected_reason' => $rejected_reason ?? null,
             ]);
 
             $db->commit();
@@ -87,7 +95,7 @@ class TransactionsController extends AppController
             return back()->withErrors('Une erreur s\'est produite lors du transfert: ' . $e->getMessage());
         }
 
-        $message = match($validated['action']) {
+        $message = $rejected_reason ?? match($validated['action']) {
             'validated' => 'Retrait approuvé avec succès. <b>' . $retrait->montant . ' $</b> transferé à ' . $retrait->tel,
             'rejected'  => 'Demande de retrait rejétée avec succès.',
         };

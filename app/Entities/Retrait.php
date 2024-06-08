@@ -10,7 +10,7 @@ class Retrait extends Model
     protected array $fillable = [
         'ref', 'user_id', 'tel', 
         'compte', 'montant', 'meta', 
-        'statut', 'process_at', 'process_by',
+        'statut', 'process_at', 'process_by', 'rejected_reason',
     ];
     protected array $casts = [
         'meta' => 'json',
