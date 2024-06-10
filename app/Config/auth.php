@@ -105,7 +105,7 @@ return [
         'login'             => '/',
         'logout'            => 'login',
         'force_reset'       => '/',
-        'permission_denied' => '/',
+        'permission_denied' => '/admin',
         'group_denied'      => '/',
     ],
 
@@ -478,7 +478,7 @@ return [
                 $final_url = $url;
                 break;
 
-            case link_to($url) !== false: // L'URL est une route nommée
+            case !empty(link_to($url)): // L'URL est une route nommée
                 $final_url = rtrim(url_to($url), '/ ');
                 break;
 

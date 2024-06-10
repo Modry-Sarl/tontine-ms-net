@@ -72,10 +72,12 @@ Route::middleware('session')->group(function() {
             Route::name('admin.membres')->get('/membres', 'index');
             Route::name('admin.membre')->get('/membre', 'show');
             Route::name('admin.membre.config')->form('/membre-config', 'config');
-            Route::name('admin.membre.add')->form('/membre-add', 'add');
+            Route::name('admin.membre.add')->middleware('permission:admin.add-user')->form('/membre-add', 'add');
         });
         Route::controller('TransactionsController')->group(function() {
-            Route::name('admin.transactions.approbations')->form('/approbations', 'approbations');
+            Route::name('admin.transactions.approbations')
+                ->middleware('permission:' . implode(',', ['admin.list-withdrawal-request', 'admin.process-withdrawal-request']))
+                ->form('/approbations', 'approbations');
         });
     });
 });

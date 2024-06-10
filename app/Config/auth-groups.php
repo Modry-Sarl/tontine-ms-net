@@ -72,6 +72,10 @@ return [
         'users.edit'          => 'Can edit existing non-admin users',
         'users.delete'        => 'Can delete existing non-admin users',
         'beta.access'         => 'Can access beta-level features',
+
+        'admin.add-user' => 'Add user via admin interface',
+        'admin.list-withdrawal-request' => 'Liste les demandes de retrait',
+        'admin.process-withdrawal-request' => 'Autorise ou rejecte les demandes de retrait',
     ],
 
     /**

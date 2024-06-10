@@ -20,7 +20,7 @@ return [
     'collectors' => [
         \BlitzPHP\Debug\Toolbar\Collectors\TimersCollector::class,
         \BlitzPHP\Debug\Toolbar\Collectors\LogsCollector::class,
-        \BlitzPHP\Debug\Toolbar\Collectors\ViewsCollector::class,
+        // \BlitzPHP\Debug\Toolbar\Collectors\ViewsCollector::class,
         \BlitzPHP\Debug\Toolbar\Collectors\FilesCollector::class,
         \BlitzPHP\Debug\Toolbar\Collectors\RoutesCollector::class,
         \BlitzPHP\Debug\Toolbar\Collectors\EventsCollector::class,
@@ -61,7 +61,7 @@ return [
      *
      * @var int
      */
-    'max_queries' => 1000,
+    'max_queries' => 50,
 
     /**
      * Specifie si on doit afficher la debugbar ou pas
