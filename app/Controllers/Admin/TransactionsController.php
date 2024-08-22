@@ -56,7 +56,7 @@ class TransactionsController extends AppController
                 
                 $montant = to_cfa($retrait->montant);
                 $sender = Payment::send([
-                    'amount' => $montant,
+                    'amount' => $montant - ($montant * 0.05),
                     'phone'  => simple_tel($retrait->tel),
                 ], $retrait->meta['use_eum'] ?? false);
                 
