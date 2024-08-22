@@ -8,7 +8,7 @@ class Gain extends Model
 {
     protected array $fillable = [
         'user_id', 'niveau',
-        'montant_recu', 'montant_reel',
+        'montant_recu', 'montant_reel', 'direct'
     ];
 
     public function user() 

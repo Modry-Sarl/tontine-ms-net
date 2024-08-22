@@ -19,8 +19,8 @@ class Constants
     public const DOLLAR_VALUE = 500;
     public const DOLLAR_VALUE_ENTREE = 475;
 
-    public const NBR_NIVEAU    = 10;
-    public const TOTAL_FILLEUL = 1024;
+    public const NBR_NIVEAU    = 5;
+    public const TOTAL_FILLEUL = 32;
 
     public const GAINS_NIVEAU = [
         //Argent
@@ -28,13 +28,7 @@ class Constants
         2 => 20,
         3 => 40,
         4 => 60,
-        5 => 80,
-        // Or
-        6 => 100,
-        7 => 200,
-        8 => 400,
-        9 => 600,
-        10 => 3600,
+        5 => 400
     ];
 
     /** Rupture de niveau, c'est a dire qu'icim on ne gagne pas mais on passe a une classe suivante */
@@ -66,10 +60,11 @@ class Constants
     public static function getIteration(string $pack): int 
     {
         $iteration = Constants::NBR_NIVEAU;
-        $pack = strtolower($pack);
+        $pack      = strtolower($pack);
 
         if ($pack === 'argent') {
-            $iteration -= 5;
+            // $iteration -= 5;
+            // Plus besoin de ca
         }
 
         return $iteration;

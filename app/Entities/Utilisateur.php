@@ -12,7 +12,7 @@ class Utilisateur extends Model
 
     protected array $fillable = [
         'user_id', 'ref', 'parrain',
-        'main', 'pack'
+        'main', 'pack', 'lock',
     ];
 
     /**

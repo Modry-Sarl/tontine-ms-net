@@ -170,6 +170,7 @@ class UserModel extends SchildUserModel
                     $user->increment('solde_principal', $montant);
                 } else if ($niveau === Constants::BREAK_LEVEL[0]) {
                     $user->pack = 'or';
+                    $user->lock = true;
                 }
             }
 
@@ -197,6 +198,7 @@ class UserModel extends SchildUserModel
             'user_id'      => $user->id,
             'montant_reel' => $reel,
             'montant_recu' => $recu,
+            'direct'       => 1,
             'created_at'   => date('Y-m-d H:i:s'),
             'updated_at'   => date('Y-m-d H:i:s'),
         ]);

@@ -51,7 +51,7 @@ class DashboardController extends AppController
     {
         $model = model(UserModel::class);
 
-        $principal = array_filter($comptes, fn($c) => $c->main)[0] ?? null;
+        $principal = array_filter($comptes, fn($c) => $c->main && !$c->lock)[0] ?? null;
         
         foreach ($comptes as $compte) {
             $filleuls = $model->listFilleuls($compte);
