@@ -34,7 +34,7 @@ class PaymentController extends AppController
             return $this->response->withStatus(StatusCode::FORBIDDEN);
         }
 
-        if (empty($user = Utilisateur::findOrFail($payement['user']))) {
+        if (empty($user = Utilisateur::find($payement['user']))) {
             return $this->response->withStatus(StatusCode::UNAUTHORIZED);
         }
 

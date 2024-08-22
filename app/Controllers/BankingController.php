@@ -28,7 +28,7 @@ class BankingController extends AppController
         if ($data['status'] === 'cancelled') {
             Payment::removeRef($payment_ref);
         }
-        if ($data['status'] === 'success') {
+        else if ($data['status'] === 'success') {
             /** @var PaymentController $controller */
             $controller = Services::factory(PaymentController::class);
             $controller->initialize($this->request, $this->response, $this->logger);
