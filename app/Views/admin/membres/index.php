@@ -60,6 +60,7 @@
                                     <div class="dropdown-menu dropdown-menu-right">
                                         <a class="dropdown-item" href="<?= link_to('admin.membre') . '?ref=' . $user->ref ?>">Details</a>
                                         <a class="dropdown-item" href="<?= link_to('admin.membre.config') . '?ref=' . $user->ref ?>">Configurer</a>
+                                        <a class="dropdown-item" href="<?= link_to('admin.membre.config') . '?ref=' . $user->ref ?>&tab=attribution">Attribuer à un autre</a>
                                     </div>
                                 </div>
                             </td>

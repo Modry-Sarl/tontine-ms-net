@@ -97,7 +97,7 @@ class MembresController extends AppController
     {
         $tab = $this->request->string('tab', 'profil');
 
-        if (empty($tab) || !in_array($tab, ['profil', 'access', 'identity', 'permutation'])) {
+        if (empty($tab) || !in_array($tab, ['profil', 'access', 'identity', 'permutation', 'attribution'])) {
             return redirect()->back();
         }
 
@@ -143,6 +143,14 @@ class MembresController extends AppController
             $messages += [
                 'parrain:exists' => 'Le parrain renseigné n\'existe pas',
                 'permut:exists'  => 'Le membre avec lequel on souhaite permuter n\'existe pas',
+            ];
+        } elseif ($tab == 'attribution') {
+            $rules += [
+                'tel'   => ['required', 'string', 'size:9'],
+            ];
+            $messages += [
+                'tel:required' => 'Veuillez entre le numéro de téléphone du nouveau membre',
+                'tel:size' => 'Numéro de téléphone invalide',
             ];
         }
 
@@ -221,7 +229,45 @@ class MembresController extends AppController
                     $permut->saveEmailIdentity();
                 }
             }
+            else if($tab === 'attribution') {
+                $u = User::where('tel', $validated['tel'])->first();
+                // un membre rescent (donc il n'existe pas encore)
+                if ($u === null) {
+                    // si le membre donneur n'a qu'un seul compte, on permute juste le numero
+                    if (Utilisateur::where('user_id', $user->user_id)->count() === 1) {
+                        $user->user->tel = $validated['tel'];
+                        $user->user->setPassword($validated['tel']);
+                        $user->user->saveEmailIdentity();
+                        $user->user->save();
+                    }
+                    // sinon on creer un nouveau package et on detache le compte donneur pour l'envoyer dans le nouveau package
+                    else {
+                        $newUser = User::create([
+                            'username'   => $user->user->username,
+                            'tel'        => $validated['tel'],
+                            'num_compte' => time(),
+                            'pays'       => $user->user->pays,
+                        ]);
+                        $newUser->id  = $newUser->id;                           // patch for preventing schild bug on transaction.
+                        $email        = explode('@', $user->user->getEmail());
+                        $email[0]    .= '-' . $validated['tel'];
+                        
+                        $newUser->setEmail(implode('@', $email));
+                        $newUser->setPassword($validated['tel']);
+                        $newUser->saveEmailIdentity();
+                        
+                        model(UserModel::class)->addToDefaultGroup($newUser);
+                        $newUser->activate();
 
+                        $user->user_id = $newUser->id;
+                        $user->main = 1;
+                    }
+                } else {
+                   $user->user_id = $u->id;
+                }
+
+                $user->save();
+            }
 
             $db->commit();
         } catch (Exception $e) {

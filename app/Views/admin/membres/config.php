@@ -1,4 +1,4 @@
-<?php $this->section('title', 'Informations du membre'); ?>
+<?php $this->section('title', 'Configuration du membre'); ?>
 <?php $this->extend('admin') ?>
 
 <?php $this->section('content') ?>
@@ -36,8 +36,12 @@
             <li class="nav-item">
                 <a <?= $this->class(['nav-link text-uppercase', 'active' => $tab == 'identity']) ?> href="<?= current_url(true)->addQuery('tab', 'identity') ?>">Identité</a>
             </li>
+            <hr>
             <li class="nav-item">
                 <a <?= $this->class(['nav-link text-uppercase', 'active' => $tab == 'permutation']) ?> href="<?= current_url(true)->addQuery('tab', 'permutation') ?>">Permutation</a>
+            </li>
+            <li class="nav-item">
+                <a <?= $this->class(['nav-link text-uppercase', 'active' => $tab == 'attribution']) ?> href="<?= current_url(true)->addQuery('tab', 'attribution') ?>">Attribuer à un autre</a>
             </li>
             <hr>
             <li class="nav-item">
