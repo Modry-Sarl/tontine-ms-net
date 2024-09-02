@@ -9,6 +9,7 @@ use App\Models\UserModel;
 use App\MS\App;
 use App\Services\Registration;
 use BlitzPHP\Exceptions\ValidationException;
+use BlitzPHP\Wolke\Pagination\LengthAwarePaginator;
 use Exception;
 
 class MembresController extends AppController
@@ -31,7 +32,11 @@ class MembresController extends AppController
 
         $ids = $db->values('id');
 
-        $data['users'] = Utilisateur::with('user')->whereIn('id', $ids)->paginate(25, [], 'page', $this->request->integer('page'));
+        if ($ids === []) {
+            $data['users'] = new LengthAwarePaginator([], 0, 25,);   
+        } else {
+            $data['users'] = Utilisateur::with('user')->whereIn('id', $ids)->paginate(25, [], 'page', $this->request->integer('page'));
+        }
         
         return $this->render($data);
     }
