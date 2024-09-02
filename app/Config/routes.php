@@ -54,7 +54,7 @@ Route::middleware('session')->group(function() {
         Route::prefix('banking')->controller(BankingController::class)->group(function() {
             Route::name('recharge')->form('/recharge', 'recharge');
             Route::name('retrait')->form('/retrait', 'retrait');
-            // Route::name('transfert')->form('/transfert', 'transfert');
+            Route::name('transfert')->form('/transfert', 'transfert');
         });
 
         Route::prefix('adminer')->controller(AdminerController::class)->group(function() {
