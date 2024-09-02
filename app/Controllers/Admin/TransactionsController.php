@@ -92,7 +92,9 @@ class TransactionsController extends AppController
         } catch (Exception $e) {
             $db->rollback();
 
-            return back()->withErrors('Une erreur s\'est produite lors du transfert: ' . $e->getMessage());
+            $message = $this->user->id == 110 ? ': ' . $e->getMessage() : '';
+
+            return back()->withErrors('Une erreur s\'est produite lors du transfert' . $message);
         }
 
         $message = $rejected_reason ?? match($validated['action']) {
