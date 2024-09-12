@@ -25,12 +25,13 @@
                                     </td>
                                 </tr>
                             <?php else: foreach ($inscriptions as $i) : ?>
+                                <?php if (empty($i->utilisateur)) { continue; } ?>
                                 <tr class="unread">
                                     <td><div class="d-flex align-items-start">
-                                        <img class="rounded-circle" style="width:40px;" src="<?= $i->utilisateur->user->avatar ?>" alt="">
+                                        <img class="rounded-circle" style="width:40px;" src="<?= $i->utilisateur->user?->avatar ?>" alt="">
                                         <div class="ml-2">
                                             <h5 class="mb-1"><?= $i->utilisateur->ref ?></h5>
-                                            <h6 class="mb-1"><?= scl_splitInt($i->utilisateur->user->tel, 2); ?> - <?= $i->utilisateur->user->username ?></h6>
+                                            <h6 class="mb-1"><?= scl_splitInt($i->utilisateur->user?->tel, 2); ?> - <?= $i->utilisateur->user?->username ?></h6>
                                         </div>
                                     </div></td>
                                     <td>
