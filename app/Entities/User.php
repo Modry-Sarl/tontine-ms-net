@@ -16,7 +16,7 @@ class User extends SchildUser
 
     public function utilisateur() 
     {
-        return $this->hasOne(Utilisateur::class);
+        return $this->hasOne(Utilisateur::class)->sortAsc('lock')->sortDesc(['main', 'niveau']);
     }
 
     public function comptes() 
