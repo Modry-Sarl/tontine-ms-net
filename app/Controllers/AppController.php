@@ -51,11 +51,11 @@ abstract class AppController extends ApplicationController
             $reflection = new ReflectionClass($this);
             if (str_starts_with($reflection->getNamespaceName(), 'App\Controllers\Admin')) {
                 $this->user = User::with(['utilisateur' => function($q) {
-                    $q->sortDesc('main');
+                    $q->sortDesc(['main', 'niveau'])->sortAsc('lock');
                 }])->find(auth()->id());
             } else {
                 $this->user = User::with(['utilisateur' => function($q) {
-                    $q->sortDesc('main');
+                    $q->sortDesc(['main', 'niveau'])->sortAsc('lock');
                     $q->with(['notifications' => fn($q) => $q->where('lu', 0)->limit(5) ]);
                 }])->find(auth()->id());
                 
