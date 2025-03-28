@@ -19,7 +19,7 @@ class App
         $letters = range('A', 'Z');
 
         return 
-            'MS' . str_pad(++$total, 3, "0", STR_PAD_LEFT) .
+            'VC' . str_pad(++$total, 3, "0", STR_PAD_LEFT) .
              $letters[array_rand($letters)] . $letters[array_rand($letters)] . 
              date('ym');
     }
@@ -31,7 +31,7 @@ class App
 
     public static function isRef(string $arg): bool
     {
-        return preg_match('/^MS[0-9]{3}[A-Z]{2}[0-9][4]$/', $arg) != false;
+        return preg_match('/^(MS|VC)[0-9]{3}[A-Z]{2}[0-9][4]$/', $arg) != false;
     }
 
     /**

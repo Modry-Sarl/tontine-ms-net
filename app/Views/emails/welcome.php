@@ -1,9 +1,9 @@
-<?php $this->start('title', 'Bienvenue sur TONTINE MS-NET'); ?>
+<?php $this->start('title', 'Bienvenue sur ' . strtoupper(config('app.name'))); ?>
 
 <?php $this->start('content'); ?>
 
 <p>Salut <?= $user->user->username ?>, </p>
-<p>Vous avez été inscrit avec succès sur la plateforme TONTINE MS-NET. Nous vous souhaitons la bienvenue et esperons que vous vous plairez parmis nous. </p>
+<p>Vous avez été inscrit avec succès sur la plateforme <?= strtoupper(config('app.name')) ?>. Nous vous souhaitons la bienvenue et esperons que vous vous plairez parmis nous. </p>
 <p>Trouvez ci dessous vos informations de connexion à votre compte. </p>
 <table  width="100%" style="margin-top: 25px; margin-bottom: 25px" border="0" cellspacing="0" cellpadding="0">
     <tbody>

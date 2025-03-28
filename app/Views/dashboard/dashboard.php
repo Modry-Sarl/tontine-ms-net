@@ -103,7 +103,7 @@
 			<div class="card-body">
 				Salut <?= $_user->username ?>, nous sommes heureux de vous compter parmis les nôtres.
 				<br/>
-				TONTINE MS-NET c'est simple, c'est facile et comme dab, faites comme chez-vous
+				<?= strtoupper(config('app.name')) ?> c'est simple, c'est facile et comme dab, faites comme chez-vous
 				<br/>
 				<span class="d-inline-block w-100 text-center mt-2">
 					<i class="fa fa-smile fa-5x"></i>

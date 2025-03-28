@@ -20,7 +20,7 @@ class AppListener implements EventListenerInterface
 			$inscriptor = $eventInterface->getParam('user');
 
 			Services::mail()->to($user->user->getEmail(), $user->user->username)
-				->subject('Bienvenue sur TONTINE MS-NET')
+				->subject('Bienvenue sur ' . strtoupper(config('app.name')))
 				->view('welcome', [
 					'user'     => $user,
 					'password' => $password

@@ -302,7 +302,7 @@ class Payment
 
 	private static function generateRef(array $data): string
 	{
-		$ref = str_replace('.', '-', uniqid('ms-', true));
+		$ref = str_replace('.', '-', uniqid('vc-', true));
 
 		Storage::put('payments/' . $ref, json_encode([
 			'ref'  => $ref,

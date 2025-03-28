@@ -41,8 +41,8 @@
                                                                                 <tr>
                                                                                     <td align="left" style="padding-top: 0; padding-bottom: 20px; padding-left:30px"> 
                                                                                         <a class="logo" href="<?= site_url() ?>"> 
-                                                                                            <img src="<?= img_url('logo/logo-mini.jpg') ?>" alt="TONTINE MS-NET" width="50" height="50" style="vertical-align: middle;" /> 
-                                                                                            <span>TONTINE MS-NET</span>
+                                                                                            <img src="<?= img_url('logo/logo-mini.jpg') ?>" alt="<?= config('app.name') ?>" width="50" height="50" style="vertical-align: middle;" /> 
+                                                                                            <span class="text-uppercase"><?= config('app.name') ?></span>
                                                                                         </a> 
                                                                                     </td> 
                                                                                 </tr> 
@@ -99,7 +99,7 @@
                                         <a href="https://wa.me/237655094814?text=<?= urlencode("Bonjour j'ai besoin d'aide à propos de la plateforme tontinemsnet") ?>" style="color: #65735B; text-decoration: underline;">Contacter le support</a> 
                                         
                                         <div style="font-family: Helvetica, Arial, sans-serif; word-break: normal;" class="address-link">Yaoundé Cameroun</div> 
-                                        <div style="font-family: Helvetica, Arial, sans-serif; word-break:normal;" >&copy; <?= date('Y') ?> TONTINE MS-NET.</div> 
+                                        <div style="font-family: Helvetica, Arial, sans-serif; word-break:normal;" >&copy; <?= date('Y') ?> <?= strtoupper(config('app.name')) ?>.</div> 
                                     </td> 
                                 </tr> 
                             </tbody> 

@@ -6,7 +6,7 @@
 <form action="<?= link_to('login') ?>" method="POST" class="card-body text-center">
     <div class="mb-2 d-inline-flex align-items-center flex-column flex-lg-row">
         <img class="img-fluid w-25" src="<?= img_url('logo/logo-mini.jpg') ?>" alt="">
-        <h3 class="text-center titre-principal ml-2 mb-0  font-weight-bold">TONTINE MS-NET</h3>
+        <h3 class="text-center titre-principal ml-2 mb-0  font-weight-bold text-uppercase"><?= config('app.name') ?></h3>
     </div>
     <h5 class="mb-5 mt-2">Connectez-vous</h5>
 

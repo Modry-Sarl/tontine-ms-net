@@ -1,5 +1,5 @@
-# tontine-ms-net
-Tontine MS Net - Clone de Virmo 2 par Laurette Mintoume
+# virmo-cash
+Virmo Cash - Clone de Virmo 2 par Laurette Mintoume
 
 ## Exigences
 php >= 8.1
@@ -10,13 +10,13 @@ mysql >= 8.0
 1 - Cloner le projet 
 
 ```shell
-git clone https://github.com/Modry-Sarl/tontine-ms-net.git
+git clone https://github.com/Modry-Sarl/tontine-ms-net.git virmocash
 ```
 
 2 - Installer les dependances
 
 ```shell
-cd tontine-ms-net
+cd virmocash
 
 composer install
 ```
@@ -30,7 +30,7 @@ cp .env.example .env
 4 - Creer la base de donnees
 
 ```shell
-php klinge db:create tontine
+php klinge db:create virmocash
 ```
 
 5 - Creer la structure de la base de donnees
@@ -53,5 +53,5 @@ php klinge serve
 
 Le serveur demarre a l'adresse `http://localhost:3300`
 
-Login: admin@tontinemsnet.com 
+Login: admin@virmocash.com 
 Mot de passe: password

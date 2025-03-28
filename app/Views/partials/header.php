@@ -3,7 +3,7 @@
         <a class="mobile-menu" id="mobile-collapse1" href="javascript:"><span></span></a>
         <a href="<?= link_to('dashboard') ?>" class="b-brand">
             <img class="img-fluid rounded-circle" style="width: 4.5em" src="<?= img_url('logo/logo-mini.jpg') ?>" alt="">
-            <span class="b-title font-weight-bold text-center">TONTINE MS-NET</span>
+            <span class="b-title font-weight-bold text-center text-uppercase"><?= config('app.name') ?></span>
         </a>
     </div>
     <a class="mobile-menu" id="mobile-header" href="javascript:">

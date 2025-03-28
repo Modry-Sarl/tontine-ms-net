@@ -3,7 +3,7 @@
         <div class="navbar-brand header-logo">
             <a href="<?= link_to('admin.dashboard') ?>" class="b-brand ml-n2">
                 <img class="img-fluid rounded-circle" style="width: 2em" src="<?= img_url('logo/logo-mini.jpg') ?>" alt="">
-                <span class="b-title font-weight-bold text-center">TONTINE MS-NET</span>
+                <span class="b-title font-weight-bold text-center text-uppercase"><?= config('app.name') ?></span>
             </a>
             <a class="mobile-menu" id="mobile-collapse" href="javascript:"><span></span></a>
         </div>

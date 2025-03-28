@@ -3,7 +3,7 @@
         <a class="mobile-menu" id="mobile-collapse1" href="javascript:"><span></span></a>
         <a href="<?= link_to('dashboard') ?>" class="b-brand">
             <img class="img-fluid rounded-circle" style="width: 4.5em" src="<?= img_url('logo/logo-mini.jpg') ?>" alt="">
-            <span class="b-title font-weight-bold text-center">TONTINE MS-NET</span>
+            <span class="b-title font-weight-bold text-center text-uppercase"><?= config('app.name') ?></span>
         </a>
     </div>
     <a class="mobile-menu" id="mobile-header" href="javascript:">
@@ -12,7 +12,7 @@
     <div class="collapse navbar-collapse theme-bg">
         <div class="mr-auto text-center" style="flex: 1">
             <h1 translate="no" class="notranslate titre-principal">
-				<span class="d-none d-lg-block">TONTINE MS-NET : Centre d'administration</span>
+				<span class="d-none d-lg-block"><?= strtoupper(config('app.name')) ?> : Centre d'administration</span>
 				<span class="d-block d-lg-none">Centre d'administration</span>
 			</h1>
         </div>
