@@ -23,7 +23,7 @@ return [
     'groups' => [
         'api'   => [],
         'web'   => [
-            \App\Middlewares\VerifyCsrfToken::class,
+            // \App\Middlewares\VerifyCsrfToken::class,
             \BlitzPHP\Middlewares\PerformanceMetrics::class, // Mesures de performances
             \BlitzPHP\Middlewares\PageCache::class, // Mise en cache des pages Web
         ],

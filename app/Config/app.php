@@ -85,7 +85,7 @@ return [
     | il y a une traduction disponible si vous avez l'intention d'utiliser quelque chose d'autre
     | que l'anglais.
     */
-    'language' => 'en',
+    'language' => 'fr',
 
     /**
      * ------------------------------------------------- -------------------------
