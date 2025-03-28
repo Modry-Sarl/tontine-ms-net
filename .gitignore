@@ -121,3 +121,4 @@ nb-configuration.xml
 /storage/app/payments/**
 !/storage/app/payments/.gitkeep
 /dploy.yaml
+/.env.production
