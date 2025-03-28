@@ -13,7 +13,7 @@ class AppListener implements EventListenerInterface
 {	
 	public function listen(EventManagerInterface $event): void
 	{
-		$event->attach('user:register', function (EventInterface $eventInterface) {
+		$event->on('user:register', function (EventInterface $eventInterface) {
 			/** @var Utilisateur $user */
 			$user       = $eventInterface->getTarget();
 			$password   = $eventInterface->getParam('password');
@@ -28,8 +28,8 @@ class AppListener implements EventListenerInterface
 				->send();
 		});
 
-		$event->attach('pre_system', function () {
-            Paginator::viewFactoryResolver(fn() => Services::viewer());
+		$event->on('pre_system', function () {
+            Paginator::viewFactoryResolver(fn() => service('viewer'));
 			Paginator::useBootstrap();
         });
 	}

@@ -107,7 +107,7 @@ class Register
                 throw $e;
             }
 
-            Services::event()->trigger('register', $user);
+            Services::event()->emit('register', $user);
 
             // Activer l'utilisateur
             $user->activate();
