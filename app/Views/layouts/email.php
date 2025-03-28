@@ -66,13 +66,13 @@
                                                                                 <?= $this->show('action') ?>
                                                                                 <tr> 
                                                                                     <td class="card-row" style="font-family: Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px; word-break: break-word; padding-left: 20px; padding-right: 20px; padding-top: 30px; margin-left: px; margin-right: px; "> 
-                                                                                        <div style="padding-top: 10px;">Merci pour votre confiance,<br>L'équipe MS-NET</div> 
+                                                                                        <div style="padding-top: 10px;">Merci pour votre confiance,<br>L'équipe <?= config('app.name') ?></div> 
                                                                                     </td> 
                                                                                 </tr> 
                                                                                 <tr> 
                                                                                     <td class="card-row" style="font-family: Helvetica, Arial, sans-serif; font-size: small; word-break: break-word; color: red; text-align: center"> 
                                                                                         <hr style="margin-bottom: 5px; margin-top: 20px"/>
-                                                                                        Email envoyé automatiquement par le programme MS-NET. Vous ne devez pas le répondre directement. 
+                                                                                        Email envoyé automatiquement par le programme <?= config('app.name') ?>. Vous ne devez pas le répondre directement. 
                                                                                         Si vous avez des préoccupations, contactez notre support.
                                                                                     </td> 
                                                                                 </tr> 

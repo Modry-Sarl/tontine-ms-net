@@ -1,4 +1,4 @@
-<?php $this->section('title', 'Liste des membres MS-NET'); ?>
+<?php $this->section('title', 'Liste des membres Virmo Cash'); ?>
 <?php $this->extend('admin') ?>
 
 <?php $this->section('content') ?>

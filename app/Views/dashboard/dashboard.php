@@ -170,7 +170,7 @@
             <div class="col-lg-8">
                 <div class="card">
                     <div class="card-header theme-bg">
-                        <h5 class=" text-white"><i class="fa fa-chart-pie fa-fw"></i> Les membres MS-NET</h5>
+                        <h5 class=" text-white"><i class="fa fa-chart-pie fa-fw"></i> Les membres V-Cash</h5>
                     </div>
                     <div class="card-body">
                         <table class="w-100 table">

@@ -171,7 +171,7 @@
     <div class="col-lg-8">
         <div class="card">
             <div class="card-header theme-bg">
-                <h5 class=" text-white"><i class="fa fa-users fa-fw"></i> Famille MS-NET</h5>
+                <h5 class=" text-white"><i class="fa fa-users fa-fw"></i> Famille V-Cash</h5>
             </div>
             <div class="card-body">
                 <section class="table-responsive">
@@ -184,7 +184,7 @@
                             </tr>
                             <tr>
                                 <?php if (empty($user->parrain)): ?>
-                                <td colspan="2">Ce membre est au sommet de la pyramide MS-NET<br /><br /></td>
+                                <td colspan="2">Ce membre est au sommet de la pyramide V-Cash<br /><br /></td>
                                 <?php else: ?>
                                 <td><img class="border rounded p-1" src="<?= $user->referer->user->avatar ?>"
                                         style="width:2em;height:2em;" /></td>

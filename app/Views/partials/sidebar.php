@@ -25,7 +25,7 @@
                 <li class="nav-item pcoded-hasmenu <?= link_active(['infos', 'progression', 'filleuls', 'comptes'], 'active pcoded-trigger') ?>">
                     <a href="javascript:" class="nav-link ">
                         <span class="pcoded-micon"><i class="fa fa-fw fa-user-cog"></i></span>
-                        <span class="pcoded-mtext notranslate" translate="no">MS Adminer</span>
+                        <span class="pcoded-mtext notranslate" translate="no">VC Adminer</span>
                     </a>
                     <ul class="pcoded-submenu">
                         <li class="<?= link_active('infos') ?>"><a class="" href="<?= link_to('infos') ?>">Informations utiles</a></li>
@@ -37,7 +37,7 @@
                 <li class="nav-item pcoded-hasmenu <?= link_active(['retrait', 'recharge', 'transfert', 'transactions'], 'active pcoded-trigger') ?>">
                     <a href="javascript:" class="nav-link ">
                         <span class="pcoded-micon"><i class="fa fa-fw fa-credit-card"></i></span>
-                        <span class="pcoded-mtext notranslate" translate="no">MS Banking</span>
+                        <span class="pcoded-mtext notranslate" translate="no">VC Banking</span>
                     </a>
                     <ul class="pcoded-submenu">
                         <li class="<?= link_active('retrait') ?>"><a class="" href="<?= link_to('retrait') ?>">Effectuez un retrait</a></li>
@@ -49,7 +49,7 @@
                 <li class="nav-item pcoded-hasmenu <?= link_active(['register', 'inscriptions'], 'active pcoded-trigger') ?>">
                     <a href="javascript:" class="nav-link ">
                         <span class="pcoded-micon"><i class="fa fa-fw fa-user-plus"></i></span>
-                        <span class="pcoded-mtext notranslate" translate="no">MS Register</span>
+                        <span class="pcoded-mtext notranslate" translate="no">VC Register</span>
                     </a>
                     <ul class="pcoded-submenu">
                         <li class="<?= link_active('register') ?>"><a class="" href="<?= link_to('register') ?>">Inscrivez un membre</a></li>

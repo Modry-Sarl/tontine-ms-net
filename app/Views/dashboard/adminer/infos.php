@@ -69,7 +69,7 @@
     <div class="col-lg-8">
         <div class="card">
             <div class="card-header theme-bg">
-                <h5 class=" text-white"><i class="fa fa-users fa-fw"></i> Informations sur votre famille MS-NET</h5>
+                <h5 class=" text-white"><i class="fa fa-users fa-fw"></i> Informations sur votre famille V-Cash</h5>
             </div>
 			<div class="card-body">
 				<section class="col-sm-12 table-responsive">
@@ -78,7 +78,7 @@
 							<tr class="active"><td colspan="2"><h4>Parrain</h4></td></tr>
 							<tr>
                                 <?php if (empty($_user->utilisateur->parrain)): ?>
-                                <td colspan="2">Vous etes au sommet de la pyramide MS-NET<br/><br/></td>
+                                <td colspan="2">Vous etes au sommet de la pyramide V-Cash<br/><br/></td>
                                 <?php else: ?>
 								<td><img class="border rounded p-1" src="<?= $_user->referer->user->avatar ?>" style="width:2em;height:2em;" /></td>
 								<td>
