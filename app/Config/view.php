@@ -22,7 +22,8 @@ return [
     /**
      * Specifie si on doit compresser le code html final ou pas avant de l'envoyer au navigateur
      * 
-     * @var bool|'auto' Si auto, le systeme compressera le code uniquement si vous passez dans un environement de production
+     * @var bool|'auto'|Closure Si auto, le systeme compressera le code uniquement si vous passez dans un environement de production.
+     *                          Peut egalement etre une closure qui renvoie un boolean ou la chaine 'auto'.
      */
     'compress_output' => 'auto',
 
@@ -86,10 +87,15 @@ return [
         /**
          * [Configuration Blade](https://laravel.com/docs/9.x/views)
          * 
-         * executer `composer require beebmx/blade`
-         * require beebmx/blade
+         * executer `composer require jenssegers/blade`
+         * require jenssegers/blade
          */
         'blade' => [
+            // /**
+            //  * Extension de fichier de vues
+            //  */
+            // 'extension' => 'blade.php',
+
             // /**
             //  * Répertoire où sont stockés les caches de vues
             //  * 
@@ -110,6 +116,14 @@ return [
             //  * @var array<string, callable>
             //  */
             // 'if' => [],
+
+            //  /**
+            //   * Fonction de configuration manuelle du moteur de template
+            //   */
+            // 'configure' => function (\Jenssegers\Blade\Blade $engine): \Jenssegers\Blade\Blade {
+
+            //     return $engine;
+            // },
         ],
 
         /**
@@ -138,7 +152,7 @@ return [
             // 'temp_path' => TEMP_PATH . 'views',
 
             //  /**
-            //   * Fonction de comfiguration manuelle du moteur de template
+            //   * Fonction de configuration manuelle du moteur de template
             //   */
             // 'configure' => function (\Latte\Engine $engine): \Latte\Engine {
 
@@ -166,7 +180,7 @@ return [
             // 'functions' => [],
 
             // /**
-            //  * Fonction de comfiguration manuelle du moteur de template
+            //  * Fonction de configuration manuelle du moteur de template
             //  */
             // 'configure'     => function(\League\Plates\Engine $engine) : \League\Plates\Engine {
 
@@ -219,7 +233,7 @@ return [
             //  * 
             //  * @var int
             //  */
-			// 'cache_lifetime' => 300,
+			// 'cache_lifetime' => 5 * MINUTE,
 
             // /**
             //  * Mettre à jour les modèles de cache à chaque appel ?
@@ -257,7 +271,7 @@ return [
             // 'compile_check'  => on_dev(),
 
             // /**
-            //  * Fonction de comfiguration manuelle du moteur de template
+            //  * Fonction de configuration manuelle du moteur de template
             //  */
             // 'configure'     => function(\Smarty $engine) : \Smarty {
 
@@ -341,7 +355,7 @@ return [
             // 'functions' => [],
 
             // /**
-            //  * Fonction de comfiguration manuelle du moteur de template
+            //  * Fonction de configuration manuelle du moteur de template
             //  */
             // 'configure'     => function(\Twig\Environment $engine) : \Twig\Environment {
 

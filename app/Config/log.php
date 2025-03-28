@@ -14,7 +14,7 @@ return [
      * 
      * @var string
      */
-    'name' => 'Application',
+    'name' => config('app.name'),
 
     /**
      * ------------------------------------------------- -------------------------
@@ -30,11 +30,10 @@ return [
 
     /**
      * ------------------------------------------------- -------------------------
-     * Format de date pour les journaux
+     * Processeurs de logs
      * ------------------------------------------------- -------------------------
      *
-     * Chaque élément enregistré a une date associée. Vous pouvez utiliser la date PHP
-     * codes pour définir votre propre format de date
+     * Les processeurs permettent d'ajouter des données supplémentaires pour tous les enregistrements.
      * 
      * @var string[]
      */
@@ -108,7 +107,7 @@ return [
              * 
              * @var string
              */
-            'level' => \Psr\Log\LogLevel::DEBUG,
+            'level' => on_prod() ? \Psr\Log\LogLevel::ERROR : \Psr\Log\LogLevel::DEBUG,
 
             /**
              * L'extension de nom de fichier par défaut pour les fichiers journaux.

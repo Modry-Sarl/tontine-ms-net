@@ -26,8 +26,8 @@ return [
      * Gestionnaire de relais
      * ------------------------------------------------- -------------------------
      *
-     * Le nom du gestionnaire qui sera utilisé si le premier est
-     * inaccessible. Souvent, 'fichier' est utilisé ici puisque le système de fichiers est
+     * Le nom du gestionnaire qui sera utilisé si le premier est inaccessible. 
+     * Souvent, 'file' est utilisé ici puisque le système de fichiers est
      * toujours disponible, même si ce n'est pas toujours pratique pour l'application.
      *
      * @var string
@@ -39,15 +39,13 @@ return [
      * Cache Include Query String
      * --------------------------------------------------------------------------
      *
-     * Whether to take the URL query string into consideration when generating
-     * output cache files. Valid options are:
+     * Indique si la chaîne de requête de l'URL doit être prise en compte lors de la génération des fichiers de cache de sortie.
+     * Les options valides sont :
      *
-     *    false = Disabled
-     *    true  = Enabled, take all query parameters into account.
-     *            Please be aware that this may result in numerous cache
-     *            files generated for the same page over and over again.
-     *    ['q'] = Enabled, but only take into account the specified list
-     *            of query parameters.
+     *  false = Désactivé
+     *  true  = Activé, prend en compte tous les paramètres de la requête.
+     *          Veuillez noter que cela peut entraîner la génération de nombreux fichiers de cache pour la même page à plusieurs reprises.
+     *  ['q'] = Activé, mais ne prend en compte que la liste spécifiée des paramètres de la requête.
      *
      * @var bool|string[]
      */
@@ -55,11 +53,11 @@ return [
 
     /**
      * --------------------------------------------------------------------------
-     * Key Prefix
+     * Prefixe des clés
      * --------------------------------------------------------------------------
      *
-     * This string is added to all cache item names to help avoid collisions
-     * if you run multiple applications with the same cache engine.
+     * Cette chaîne est ajoutée à tous les noms d'éléments de cache pour éviter les collisions
+     * si vous utilisez plusieurs applications avec le même moteur de cache.
 	 * 
 	 * @var	string
      */
@@ -67,29 +65,28 @@ return [
 
     /**
      * --------------------------------------------------------------------------
-     * Default TTL
+     * Durée de vie par défaut
      * --------------------------------------------------------------------------
      *
-     * The default number of seconds to save items when none is specified.
+     * Le nombre de secondes par défaut pour enregistrer les éléments si aucun n'est spécifié.
      *
-     * WARNING: This is not used by framework handlers where 60 seconds is
-     * hard-coded, but may be useful to projects and modules. This will replace
-     * the hard-coded value in a future release.
+     * AVERTISSEMENT : Cette valeur n'est pas utilisée par les gestionnaires du cadre où la valeur de 60 secondes est codée en dur, mais elle peut être utile aux projets et aux modules.
+     * Cette valeur remplacera la valeur codée en dur dans une prochaine version.
 	 * 
 	 * @var int
      */
-	'ttl' => 60,
+	'ttl' => MINUTE,
 
     /**
      * --------------------------------------------------------------------------
-     * Reserved Characters
+     * Caractères réservés
      * --------------------------------------------------------------------------
      *
-     * A string of reserved characters that will not be allowed in keys or tags.
-     * Strings that violate this restriction will cause handlers to throw.
-     * Default: {}()/\@:
+     * Une chaîne de caractères réservés qui ne sera pas autorisée dans les clés ou les balises.
+     * Les chaînes qui ne respectent pas cette restriction entraîneront le déclenchement d'un traitement.
+     * Défaut : {}()/\@ :
      *
-     * NOTE: The default set is required for PSR-6 compliance.
+     * NOTE : Le jeu par défaut est requis pour la conformité PSR-6.
 	 * 
 	 * @var string
      */
@@ -97,10 +94,9 @@ return [
 
     /**
      * --------------------------------------------------------------------------
-     * File settings
+     * Paramètres du gestionnaire 'file'
      * --------------------------------------------------------------------------
-     * Your file storage preferences can be specified below, if you are using
-     * the File driver.
+     * Vos préférences en matière de stockage de fichiers peuvent être spécifiées ci-dessous, si vous utilisez le pilote de fichiers.
      *
      * @var array<string, int|string|null>
      */
@@ -111,10 +107,9 @@ return [
 
     /**
      * -------------------------------------------------------------------------
-     * Memcached settings
+     * Paramètres du gestionnaire 'Memcached'
      * -------------------------------------------------------------------------
-     * Your Memcached servers can be specified below, if you are using
-     * the Memcached drivers.
+     * Vos serveurs Memcached peuvent être spécifiés ci-dessous, si vous utilisez les pilotes Memcached.
      *
      * @var array<string, bool|int|string>
      */
@@ -125,10 +120,9 @@ return [
 
     /**
      * -------------------------------------------------------------------------
-     * Redis settings
+     * Paramètres du gestionnaire 'Redis'
      * -------------------------------------------------------------------------
-     * Your Redis server can be specified below, if you are using
-     * the Redis or Predis drivers.
+     * Votre serveur Redis peut être spécifié ci-dessous, si vous utilisez les pilotes Redis ou Predis.
      *
      * @var array<string, array|int|string|null>
      */
@@ -148,7 +142,7 @@ return [
      * Il s'agit d'un tableau d'alias de moteur de cache et de noms de classe. Seuls les moteurs
      * qui sont répertoriés ici sont autorisés à être utilisés.
      *
-     * @var array<string, string>
+     * @var array<string, class-string<\BlitzPHP\Cache\Handlers\BaseHandler>>
      */
     'valid_handlers' => [
         'apcu'      => \BlitzPHP\Cache\Handlers\Apcu::class,

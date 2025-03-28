@@ -19,7 +19,7 @@ return [
      */
     'collectors' => [
         \BlitzPHP\Debug\Toolbar\Collectors\TimersCollector::class,
-        \BlitzPHP\Debug\Toolbar\Collectors\LogsCollector::class,
+        // \BlitzPHP\Debug\Toolbar\Collectors\LogsCollector::class,
         // \BlitzPHP\Debug\Toolbar\Collectors\ViewsCollector::class,
         \BlitzPHP\Debug\Toolbar\Collectors\FilesCollector::class,
         \BlitzPHP\Debug\Toolbar\Collectors\RoutesCollector::class,
@@ -69,5 +69,36 @@ return [
      * 
      * @var bool 
      */
-    'show_debugbar' => false,
+    'show_debugbar' => true,
+
+    /**
+     * --------------------------------------------------------------------------
+     * Dossiers surveillés
+     * --------------------------------------------------------------------------
+     *
+     * Contient un tableau de dossiers dont les modifications seront surveillées et 
+     * utilisées pour déterminer si la fonctionnalité de rechargement à chaud doit recharger la page ou non.
+     * Nous limitons les valeurs afin de maintenir les performances au maximum.
+     *
+     * REMARQUE : Le chemin racine (ROOTPATH) sera ajouté au début de toutes les valeurs.
+     *
+     * @var list<string>
+     */
+    'watched_directories' => [
+        'app',
+    ],
+
+    /**
+     * --------------------------------------------------------------------------
+     * Extensions de fichiers surveillées
+     * --------------------------------------------------------------------------
+     *
+     * Contient un tableau d'extensions de fichiers dont les modifications seront surveillées et
+     * utilisé pour déterminer si la fonctionnalité de rechargement à chaud doit recharger la page ou non.
+     *
+     * @var list<string>
+     */
+    'watched_extensions' => [
+        'php', 'css', 'js', 'html', 'svg', 'json', 'env',
+    ],
 ];

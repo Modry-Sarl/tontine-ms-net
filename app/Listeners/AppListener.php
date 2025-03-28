@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace App\Listeners;
 
 use App\Entities\Utilisateur;
 use BlitzPHP\Contracts\Event\EventInterface;
@@ -9,7 +9,7 @@ use BlitzPHP\Contracts\Event\EventManagerInterface;
 use BlitzPHP\Database\Config\Services;
 use BlitzPHP\Wolke\Pagination\Paginator;
 
-class Listener implements EventListenerInterface
+class AppListener implements EventListenerInterface
 {	
 	public function listen(EventManagerInterface $event): void
 	{

@@ -90,4 +90,44 @@ return [
         'path', 'scl',
         'app',
     ],
+
+    /**
+     * Configuration de cohesion entre l'autoloader de BlitzPHP et celui de Composer
+     */
+    'composer' => [
+        /**
+         * --------------------------------------------------------------------------
+         * Activer la découverte automatique dans les paquets Composer ?
+         * --------------------------------------------------------------------------
+         *
+         * Si c'est le cas, la découverte automatique se fera dans tous les namespaces chargés par Composer, 
+         * ainsi que dans les namespaces configurés localement.
+         *
+         * @var bool
+         */
+        'discover' => true,
+
+        /**
+         * La liste des packages Composer pour la découverte automatique
+         * Ce paramètre est facultatif.
+         *
+         * Ex.:
+         *   [
+         *       'only' => [
+         *           // Répertoriez tous les packages à découvrir automatiquement
+         *           'blitz-php/schild',
+         *       ],
+         *   ]
+         *   or
+         *   [
+         *       'exclude' => [
+         *           // Répertoriez les packages à exclure.
+         *           'pestphp/pest',
+         *       ],
+         *   ]
+         *
+         * @var array{only?: list<string>, exclude?: list<string>}
+         */
+        'packages' => []
+    ],
 ];

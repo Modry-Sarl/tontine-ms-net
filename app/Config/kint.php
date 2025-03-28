@@ -67,13 +67,6 @@ return [
     'rich_folder'        => false,
 
     /**
-     * Mode de tri des proprietes d'objets.
-     * 
-     * @var int
-     */
-    'rich_sort'          => \Kint\Renderer\AbstractRenderer::SORT_FULL,
-
-    /**
      * @var array
      */
     'rich_value_plugins' => [],

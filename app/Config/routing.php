@@ -47,14 +47,8 @@ return [
      *
      * Ce paramètre est passé à la classe Router et géré là-bas.
      *
-     * Si vous souhaitez utiliser une fermeture, vous devez la définir dans le constructeur de classe ou le fichier itinéraires en appelant :
-     *
-     * $routes->set404Override(function() {
-     *    // Do something here
-     * });
-     *
      * Example:
-	 * 	'override404' => 'App\Errors::show404',
+	 * 	'fallback' => 'App\Errors::show404',
      */
 	'fallback' => null,
 
@@ -77,6 +71,17 @@ return [
 	'prioritize' => false,
 
     /**
+     * Pour les routes définies.
+     * Si VRAI, les segments d'URI multiples correspondants seront passés en un seul paramètre.
+     */
+    'multiple_segments_one_param' => false,
+    
+    /**
+     * Limite ou non les routes avec l'espace réservé {locale} vers App::$supported_locales.
+     */
+    'use_supported_locales_only' => false,
+
+    /**
      * Carte des segments URI et des namespace. Pour l'Auto Routing. 
 	 * 
 	 * La clé est le premier segment URI. La valeur est le namespace de contrôleur. 
@@ -89,4 +94,13 @@ return [
      * @var array [ uri_segment => namespace ]
      */
 	'module_routes' => [],
+
+    /**
+     * Pour le routage automatique.
+     * Si les tirets dans les URIs pour les contrôleurs/méthodes doivent être traduits en CamelCase.
+     * Par exemple, blog-controller -> BlogController
+     *
+     * Si vous activez ceci, `translate_uri_dashes` est ignoré.
+     */
+    'translate_uri_to_camel_case' => true,
 ];

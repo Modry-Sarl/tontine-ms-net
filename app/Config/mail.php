@@ -95,7 +95,13 @@ return [
     'timeout' => 5,
 
     /**
-     * Encryption SMTP. Soit tls ou ssl
+     * Encryption SMTP.
+     * 
+     * \BlitzPHP\Mail\Mail::ENCRYPTION_NONE, \BlitzPHP\Mail\Mail::ENCRYPTION_TLS ou \BlitzPHP\Mail\Mail::ENCRYPTION_SSL. 
+     * 
+     * - 'tls' émettra une commande STARTTLS *au serveur. 
+     * - 'ssl' signifie SSL implicite. 
+     * Connexion sur port * 465 devrait définir ceci sur 'none'.
      * 
      * @var string
      */

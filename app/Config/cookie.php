@@ -82,18 +82,18 @@ return [
      *
      * Configurer le paramètre SameSite des cookies. Les valeurs autorisées sont :
      * - None
-     * - Laxiste
+     * - Lax
      * - Strict
      * - ''
      *
      * Alternativement, vous pouvez utiliser les noms de constante :
-     * - `Cookie ::SAMESITE_NONE`
+     * - `Cookie::SAMESITE_NONE`
      * - `Cookie::SAMESITE_LAX`
      * - `Cookie::SAMESITE_STRICT`
      *
      * La valeur par défaut est "Lax" pour la compatibilité avec les navigateurs modernes. Réglage '''`
      * (chaîne vide) signifie l'attribut SameSite par défaut défini par les navigateurs (`Lax`)
-     * sera défini sur les cookies. S'il est défini sur `Aucun`, `$secure` doit également être défini.
+     * sera défini sur les cookies. S'il est défini sur `None`, `$secure` doit également être défini.
      * 
      * @var string
      */
