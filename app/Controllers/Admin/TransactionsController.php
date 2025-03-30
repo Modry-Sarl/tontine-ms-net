@@ -40,6 +40,12 @@ class TransactionsController extends AppController
             'ref'    => 'required:exists:retraits',
         ]);
 
+        if ('massive' !== $tab = $this->request->string('tab')) {
+            $tab = $validated['action'];
+        } else if (! $this->user->can('admin.process-massive-withdrawal-request')) {
+            return back()->withErrors('Vous n\'avez pas le droit d\'exécuter cette action.');
+        }
+
         $retrait = Retrait::with('user')->where('ref', $validated['ref'])->first();
 
         if (!empty($retrait->process_at)) {
@@ -107,10 +113,6 @@ class TransactionsController extends AppController
             'validated' => 'Retrait approuvé avec succès. <b>' . $retrait->montant . ' $</b> transferé à ' . $retrait->tel,
             'rejected'  => 'Demande de retrait rejétée avec succès.',
         };
-
-        if ('massive' !== $tab = $this->request->string('tab')) {
-            $tab = $validated['action'];
-        }
 
         return redirect()->to(link_to('admin.transactions.approbations') . '?tab=' . $tab)->with('success', $message);
     }

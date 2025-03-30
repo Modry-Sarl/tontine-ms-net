@@ -80,7 +80,7 @@
                         <?php endif; ?></td>
                         <td><?= $tab === 'massive' ? $retrait->created_at->format('d/m/Y - H:i') : $retrait->compte ?></td>
                         <td><?= $retrait->ref ?></td>
-                        <?php if (in_array($tab, ['pending', 'massive'])): ?>
+                        <?php if ($tab === 'pending' || ($tab === 'massive' && $_user->can('admin.process-massive-withdrawal-request'))): ?>
                         <td> 
                             <div class="d-flex">
                                 <form class="d-inline" method="post">
