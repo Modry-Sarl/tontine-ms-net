@@ -76,6 +76,11 @@ return [
         'admin.add-user' => 'Add user via admin interface',
         'admin.list-withdrawal-request' => 'Liste les demandes de retrait',
         'admin.process-withdrawal-request' => 'Autorise ou rejecte les demandes de retrait',
+        'admin.init-massive-withdrawal-request' => 'Peut initialiser les demandes de retrait en masse',
+        'admin.credit-account' => 'Peut crediter un compte utilisateur',
+        'admin.debit-account' => 'Peut debiter un compte utilisateur',
+        'admin.list-withdrawals' => 'Peut voir la liste des retraits effectués',
+        'admin.list-deposits' => 'Peut voir la liste des dépôts effectués',
     ],
 
     /**
