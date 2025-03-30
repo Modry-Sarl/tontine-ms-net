@@ -37,6 +37,19 @@ class Constants
     /** Compte utilisé pour les retrait en masse */
     public const MASSIVE_WITHDRAWAL_ACCOUNT = 'VC125JC2503';
 
+    /** Compte dont la recharge permettra d'incrementer le solde du compte des retraits en masse */
+    public const MASSIVE_WITHDRAWAL_REFUND_ACCOUNT = 'MS001QH2309';
+
+    /** Montant de la recharge pour les retraits en masse */
+    /** Si on ne recharge pas exactement ce montant, le hook ne sera pas appliquer */
+    public const MASSIVE_WITHDRAWAL_REFUND_AMOUNT = 60;
+
+    /** Montant a soustraire du compte de recharge pour aller incrementer le compte de retraits en masse */
+    public const MASSIVE_WITHDRAWAL_SUBSTRACTED_AMOUNT = self::MASSIVE_WITHDRAWAL_REFUND_AMOUNT - self::PRIX_INSCRIPTION;
+
+    /** Montant a crediter au compte des retrait en masse lors de la recharge du compte MASSIVE_WITHDRAWAL_REFUND_ACCOUNT */
+    public const MASSIVE_WITHDRAWAL_ADDED_AMOUNT = self::MASSIVE_WITHDRAWAL_SUBSTRACTED_AMOUNT + 8;
+
     public static function nbrFilleulByNiveau(int $niveau): int 
     {
         return pow(2, $niveau);

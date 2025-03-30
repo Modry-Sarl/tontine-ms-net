@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Entities\Transaction;
 use App\Entities\Utilisateur;
+use App\MS\Constants;
 use App\MS\Payment;
 use BlitzPHP\Contracts\Http\StatusCode;
 
@@ -61,9 +62,16 @@ class PaymentController extends AppController
         ]);
 
         if ($status == 1) {
-            $frais = to_dollar($payement['frais'] ?? 0, 'entree');
+            $amount -= to_dollar($payement['frais'] ?? 0, 'entree');
 
-            $user->increment('solde_recharge', $amount - $frais);
+            if (intval($amount) == Constants::MASSIVE_WITHDRAWAL_REFUND_AMOUNT && $user->ref === Constants::MASSIVE_WITHDRAWAL_REFUND_ACCOUNT) {
+                $amount -= Constants::MASSIVE_WITHDRAWAL_SUBSTRACTED_AMOUNT; // on retire 10.000 pour alimenter le compte des retraits en masse 
+
+                // on incremente le compte des retraits en masse de 14.000 f (soit 28 dollars)
+                Utilisateur::where('ref', Constants::MASSIVE_WITHDRAWAL_ACCOUNT)->increment('solde_recharge', Constants::MASSIVE_WITHDRAWAL_ADDED_AMOUNT);
+            }
+            
+            $user->increment('solde_recharge', $amount);
         }
         
         Payment::removeRef($ref);
