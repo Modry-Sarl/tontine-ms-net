@@ -21,9 +21,11 @@ class TransactionsController extends AppController
     {
         $data['tab'] = $statut = $this->request->string('tab', 'pending');
 
-        $data['approbations'] = Retrait::with('user')
-            ->where('statut', $statut)
-            ->paginate();
+        if ($statut === 'massive') { // retraits en masse
+            $data['approbations'] = Retrait::whereRelation('user', 'ref', '=', Constants::MASSIVE_WITHDRAWAL_ACCOUNT)->sortAsc('statut')->paginate();
+        } else {
+            $data['approbations'] = Retrait::with('user')->where('statut', $statut)->paginate();
+        }
 
         return $this->render('approbations', $data);
     }
@@ -106,7 +108,11 @@ class TransactionsController extends AppController
             'rejected'  => 'Demande de retrait rejétée avec succès.',
         };
 
-        return redirect()->to(link_to('admin.transactions.approbations') . '?tab=' . $validated['action'])->with('success', $message);
+        if ('massive' !== $tab = $this->request->string('tab')) {
+            $tab = $validated['action'];
+        }
+
+        return redirect()->to(link_to('admin.transactions.approbations') . '?tab=' . $tab)->with('success', $message);
     }
 
     /**
@@ -123,6 +129,9 @@ class TransactionsController extends AppController
         return $this->render('retraits', $data);
     }
 
+    /**
+     * Traitement de l'inutialisation des retraits en masse
+     */
     public function processRetraits()
     {
         try {

@@ -8,15 +8,19 @@
         <ul class="nav nav-pills" id="myTab" role="tablist">
             <li class="nav-item">
                 <a role="tab" <?= $this->class(['nav-link text-uppercase', 'active' => $tab == 'pending']) ?>
-                    href="<?= current_url(true)->addQuery('tab', 'pending') ?>">En attente</a>
+                    href="<?= current_url(true)->setQueryArray(['tab' => 'pending']) ?>">En attente</a>
             </li>
             <li class="nav-item">
                 <a role="tab" <?= $this->class(['nav-link text-uppercase', 'active' => $tab == 'validated']) ?>
-                    href="<?= current_url(true)->addQuery('tab', 'validated') ?>">Validés</a>
+                    href="<?= current_url(true)->setQueryArray(['tab' => 'validated']) ?>">Validés</a>
             </li>
             <li class="nav-item">
                 <a role="tab" <?= $this->class(['nav-link text-uppercase', 'active' => $tab == 'rejected']) ?>
-                    href="<?= current_url(true)->addQuery('tab', 'rejected') ?>">Rejétés</a>
+                    href="<?= current_url(true)->setQueryArray(['tab' => 'rejected']) ?>">Rejétés</a>
+            </li>
+            <li class="nav-item">
+                <a role="tab" <?= $this->class(['nav-link text-uppercase', 'active' => $tab == 'massive']) ?>
+                    href="<?= current_url(true)->setQueryArray(['tab' => 'massive']) ?>">Retraits en masse</a>
             </li>
         </ul>
     </div>
@@ -34,6 +38,7 @@
                 <?= $tab == 'pending' ? 'en attente de validation' : '' ?>
                 <?= $tab == 'validated' ? 'validée' : '' ?>
                 <?= $tab == 'rejected' ? 'rejétée' : '' ?>
+                <?= $tab == 'massive' ? 'en masse' : '' ?>
             </h4>
         </div>
         <?php else: ?>
@@ -44,10 +49,10 @@
                         <td style="border:none"></td>
                         <td>Téléphone</td>
                         <td>Montant</td>
-                        <td>Utilisateur</td>
-                        <td>Compte</td>
+                        <td><?= $tab === 'massive' ? 'Statut' : 'Utilisateur' ?></td>
+                        <td><?= $tab === 'massive' ? 'Date d\'initialisation' : 'Compte' ?></td>
                         <td>Ref</td>
-                        <?php if ($tab == 'pending'): ?>
+                        <?php if (in_array($tab, ['pending', 'massive'])): ?>
                         <td style="border:none"></td>
                         <?php endif; ?>
                     </tr>
@@ -58,24 +63,35 @@
                         <td><?= ++$i ?></td>
                         <td><?= scl_splitInt($retrait->tel, 2) ?></td>
                         <td><?= scl_splitInt($retrait->montant) ?> $</td>
-                        <td>
+                        <td><?php if ($tab === 'massive'): ?>
+                            <span <?= $this->class([
+                                'badge',
+                                'badge-warning' => $retrait->statut === 'pending',
+                                'badge-success' => $retrait->statut === 'validated',
+                                'badge-danger'  => $retrait->statut === 'rejected',
+                            ]) ?>><?= match($retrait->statut) {
+                                'pending'   => 'En attente',
+                                'validated' => 'Validée',
+                                'rejected'  => 'Rejetée',
+                            } ?></span>
+                        <?php else: ?>
                             <h6 class="m-0"><a href="<?= link_to('admin.membre') . '?ref=' . $retrait->user->ref ?>"><?= $retrait->user->ref ?></a></h6>
                             <span><?= $retrait->user->user?->username ?></span>
-                        </td>
-                        <td><?= $retrait->compte ?></td>
+                        <?php endif; ?></td>
+                        <td><?= $tab === 'massive' ? $retrait->created_at->format('d/m/Y - H:i') : $retrait->compte ?></td>
                         <td><?= $retrait->ref ?></td>
-                        <?php if ($tab == 'pending'): ?>
+                        <?php if (in_array($tab, ['pending', 'massive'])): ?>
                         <td> 
                             <div class="d-flex">
                                 <form class="d-inline" method="post">
                                     <input type="hidden" name="action" value="validated" />
                                     <input type="hidden" name="ref" value="<?= $retrait->ref ?>" />
-                                    <button type="submit" class="btn btn-sm btn-icon btn-success" data-toggle="tooltip" title="Approuver"><i class="fa fa-check-circle"></i></button>
+                                    <button type="submit" class="btn btn-sm btn-icon btn-success" data-toggle="tooltip" title="Approuver" <?= $this->disabled($retrait->statut !== 'pending') ?>><i class="fa fa-check-circle"></i></button>
                                 </form>
                                 <form class="d-inline" method="post">
                                     <input type="hidden" name="action" value="rejected" />
                                     <input type="hidden" name="ref" value="<?= $retrait->ref ?>" />
-                                    <button type="submit" class="btn btn-sm btn-icon btn-danger" data-toggle="tooltip" title="Rejéter"><i class="fa fa-times-circle"></i></button>
+                                    <button type="submit" class="btn btn-sm btn-icon btn-danger" data-toggle="tooltip" title="Rejéter" <?= $this->disabled($retrait->statut !== 'pending') ?>><i class="fa fa-times-circle"></i></button>
                                 </form>
                             </div>
                         </td>
