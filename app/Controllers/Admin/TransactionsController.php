@@ -5,7 +5,11 @@ namespace App\Controllers\Admin;
 use App\Controllers\AppController;
 use App\Entities\Retrait;
 use App\Entities\Transaction;
+use App\Entities\Utilisateur;
+use App\MS\Constants;
 use App\MS\Payment;
+use BlitzPHP\Exceptions\ValidationException;
+use BlitzPHP\View\View;
 use Exception;
 
 class TransactionsController extends AppController
@@ -105,4 +109,96 @@ class TransactionsController extends AppController
         return redirect()->to(link_to('admin.transactions.approbations') . '?tab=' . $validated['action'])->with('success', $message);
     }
 
+    /**
+     * Initialisation de retrait en masse
+     */
+    public function formRetraits()
+    {
+        $data['compteRetrait'] = Utilisateur::where('ref', Constants::MASSIVE_WITHDRAWAL_ACCOUNT)->first();
+        
+        if ($data['compteRetrait'] !== null) {
+            $data['dernieres_demandes'] = Retrait::where('user_id', $data['compteRetrait']->id)->limit(5)->latest()->all();
+        }
+        
+        return $this->render('retraits', $data);
+    }
+
+    public function processRetraits()
+    {
+        try {
+            $post = $this->validate([
+                'montant'  => ['required', 'array', 'min:1'],
+                'montant.*'  => ['nullable', 'numeric', 'min:1', 'max:2000'],
+                'tel'   => ['required', 'array'],
+                'tel.*'      => ['nullable', 'phone:cm'],
+                'password' => ['required', 'current_password'],
+            ], [
+                'montant:required'          => 'Veuillez indiquer les montants à retirer',
+                'montant.*:numeric'         => 'Veuillez entrer un montant valide',
+                'montant.*:min'             => 'Vous ne pouvez pas retirer moins de 1 $',
+                'montant.*:max'             => 'Vous ne pouvez pas retirer plus de 2000 $',
+                'tel:required'              => 'Veuillez entrer le numéro de téléphone des bénéficiares',
+                'tel.*:phone'               => 'Veuillez entrer un numéro de téléphone valide',
+                'password:required'         => 'Veuillez entrer votre mot de passe pour valider l\'inscription',
+                'password:current_password' => 'Mot de passe incorrect',
+            ]);
+        } catch (ValidationException $e) {
+            return $this->backHTMX('admin/htmx-form-response', $e->getErrors()->all());
+        }
+        
+        if (null === $compteRetrait = Utilisateur::where('ref', Constants::MASSIVE_WITHDRAWAL_ACCOUNT)->first()) {
+            return $this->backHTMX('admin/htmx-form-response', 'Retrait en masse non disponible pour le moment');
+        }
+
+        $montants = collect($post['montant'])->filter();
+
+        if ($montants->sum() > $compteRetrait->solde_recharge) {
+            return $this->backHTMX('admin/htmx-form-response', 'Le solde du compte spécial de retrait est insuffisant');
+		}
+
+        $retraits   = collect($post['tel'])->filter()->combine($montants)->all();
+        $references = [];
+        $db         = service('database');
+
+        try {
+            $db->beginTransaction();
+
+            foreach ($retraits as $tel => $montant) {
+                $reference[] = Retrait::generateReference($compteRetrait, [
+                    'compte'   => 'recharge',
+                    'montant'  => $montant,
+                    'tel'      => $tel,
+                    'meta' => [
+                        'use_eum' => false,
+                        'ip'      => $this->request->clientIp(),
+                        'ua'      => $this->request->userAgent(),
+                        'dt'      => date('Y-m-d H:i:s'),
+                    ]
+                ]);
+            }
+
+            $db->commit();
+        } catch (Exception $e) {
+            $db->rollback();
+
+            return $this->backHTMX('admin/htmx-form-response', $e->getMessage());
+        }
+
+        $return = $this->backHTMX(
+            'admin/htmx-form-response', 
+            '
+                Retraits initiés avec succès. 
+                Un administration approuvera votre demande d\'ici peu. 
+                Merci de patienter. 
+                Les references de votre opération sont: <b>' . implode('/', $references) . '</b>
+            ',
+            true
+        );
+
+        if ($return instanceof View) {
+            return $return->with('redirection', link_to('admin.transactions.retraits'));
+        }
+
+        return $return;
+    }
 }

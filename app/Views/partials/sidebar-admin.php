@@ -1,3 +1,4 @@
+<?php /** @var \App\Entities\User $_user */ ?>
 <nav class="pcoded-navbar">
     <div class="navbar-wrapper">
         <div class="navbar-brand header-logo">
@@ -53,9 +54,10 @@
                     </a>
                     <ul class="pcoded-submenu">
                         <li class="<?= link_active('admin.transactions.credit') ?>"><a class="" href="<?= link_to('admin.transactions.credit') ?>">Créditer/Débiter un compte</a></li>
+                        <li class="<?= link_active('admin.transactions.approbations') ?>"><a class="" href="<?= link_to('admin.transactions.approbations') ?>">Demandes de retraits</a></li>
+                        <li class="<?= link_active('admin.transactions.retraits') ?>"><a class="" href="<?= link_to('admin.transactions.retraits') ?>">Retraits en masse</a></li>
                         <li class="<?= link_active('admin.transactions.sorties') ?>"><a class="" href="<?= link_to('admin.transactions.sorties') ?>">Sorties de fonds</a></li>
                         <li class="<?= link_active('admin.transactions.entrees') ?>"><a class="" href="<?= link_to('admin.transactions.entrees') ?>">Entrées de fonds</a></li>
-                        <li class="<?= link_active('admin.transactions.approbations') ?>"><a class="" href="<?= link_to('admin.transactions.approbations') ?>">Demandes de retraits</a></li>
                     </ul>
                 </li>
             </ul>

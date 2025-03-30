@@ -78,6 +78,9 @@ Route::middleware('session')->group(function() {
             Route::name('admin.transactions.approbations')
                 ->middleware('permission:' . implode(',', ['admin.list-withdrawal-request', 'admin.process-withdrawal-request']))
                 ->form('/approbations', 'approbations');
+            Route::name('admin.transactions.retraits')
+                ->middleware('permission:admin.init-massive-withdrawal-request')
+                ->form('/retraits', 'retraits');
         });
     });
 });

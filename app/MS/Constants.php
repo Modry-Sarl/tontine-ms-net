@@ -34,6 +34,9 @@ class Constants
     /** Rupture de niveau, c'est a dire qu'icim on ne gagne pas mais on passe a une classe suivante */
     public const BREAK_LEVEL = [5];
 
+    /** Compte utilisé pour les retrait en masse */
+    public const MASSIVE_WITHDRAWAL_ACCOUNT = 'VC125JC2503';
+
     public static function nbrFilleulByNiveau(int $niveau): int 
     {
         return pow(2, $niveau);

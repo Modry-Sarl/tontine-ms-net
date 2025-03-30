@@ -27,7 +27,7 @@ class Retrait extends Model
         self::create([
             'ref'     => $ref,
             'user_id' => $user->id,
-            'tel'     => $data['tel'],
+            'tel'     => simple_tel($data['tel']),
             'montant' => (float) $data['montant'],
             'compte'  => $data['compte'],
             'meta'    => (array) ($data['meta'] ?? []),
