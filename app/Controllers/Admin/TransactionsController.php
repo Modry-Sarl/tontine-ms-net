@@ -151,12 +151,16 @@ class TransactionsController extends AppController
         }
 
         $montants = collect($post['montant'])->filter();
+        $tels     = collect($post['tel'])->filter();
 
+        if ($montants->keys()->count() !== $tels->keys()->count()) {
+            return $this->backHTMX('admin/htmx-form-response', 'Le nombre de numéro et de montant que vous avez entré diffèrent');
+        }
         if ($montants->sum() > $compteRetrait->solde_recharge) {
             return $this->backHTMX('admin/htmx-form-response', 'Le solde du compte spécial de retrait est insuffisant');
 		}
 
-        $retraits   = collect($post['tel'])->filter()->combine($montants)->all();
+        $retraits   = $tels->combine($montants)->all();
         $references = [];
         $db         = service('database');
 
@@ -164,7 +168,7 @@ class TransactionsController extends AppController
             $db->beginTransaction();
 
             foreach ($retraits as $tel => $montant) {
-                $reference[] = Retrait::generateReference($compteRetrait, [
+                $references[] = Retrait::generateReference($compteRetrait, [
                     'compte'   => 'recharge',
                     'montant'  => $montant,
                     'tel'      => $tel,
