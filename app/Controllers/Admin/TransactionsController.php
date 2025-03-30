@@ -24,7 +24,7 @@ class TransactionsController extends AppController
         if ($statut === 'massive') { // retraits en masse
             $data['approbations'] = Retrait::whereRelation('user', 'ref', '=', Constants::MASSIVE_WITHDRAWAL_ACCOUNT)->sortAsc('statut')->paginate();
         } else {
-            $data['approbations'] = Retrait::with('user')->where('statut', $statut)->paginate();
+            $data['approbations'] = Retrait::with('user')->whereRelation('user', 'ref', '!=', Constants::MASSIVE_WITHDRAWAL_ACCOUNT)->where('statut', $statut)->paginate();
         }
 
         return $this->render('approbations', $data);
