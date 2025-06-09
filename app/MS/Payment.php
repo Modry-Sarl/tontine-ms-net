@@ -13,6 +13,9 @@ class Payment
 {
 	use SingletonTrait;
 
+	const FLUTTERWAVE = 'flutterwave';
+	const MONETBIL = 'monetbil';
+
 	/**
 	 * Langue du widget
 	 */
@@ -38,11 +41,19 @@ class Payment
 	 * Endpoint de l'api de verification de paiement monetbil
 	 */
 	private string $endpoint_check = 'https://api.monetbil.com/payment/v1/checkPayment';
+	
+	/**
+	 * Endpoint de l'api de verification de paiement flutterwave
+	 */
+	private string $flutterwave_endpoint_check = 'https://api.flutterwave.com/v3/transactions/%s/verify';
 
 
 	private array $transaction_details = [];
 
 
+	public function __construct(private string $service = 'monetbil')
+	{
+	}
 
 	/**
 	 * Modifie la langue du widget monetbil
@@ -54,14 +65,35 @@ class Payment
 		return $this;
 	}
 
+	public static function service(string $service): self 
+	{
+		return self::instance($service);
+	}
+
+	public static function __callStatic($name, $arguments)
+	{
+		return call_user_func_array([self::instance(), $name], $arguments);	
+	}
+
 	
 	/**
 	 * @return array les details de la transaction
 	 */
-	public static function getTransactionDetails(array $transaction): array
+	public function getTransactionDetails(array $transaction): array
 	{
 		$td = (object) $transaction;
 
+		return match($this->service) {
+			self::FLUTTERWAVE => $this->flutterwaveTransactionDetails($td),
+			default           => $this->monetbilTransactionDetails($td),
+		};
+	}
+
+	/**
+	 * Details de la transaction chez monetbil
+	 */
+	public function monetbilTransactionDetails(object $td): array
+	{
 		$transaction_details = [
 			'phone'                   => isset($td->msisdn) ? $td->msisdn : '',
 			'indicatif'               => isset($td->country_code) ? $td->country_code : '',
@@ -86,11 +118,43 @@ class Payment
 				'CM_EUMM'           => 'EUM'
 			};
 		}
-		
-		unset($td);
 
 		return $transaction_details;
 	}
+
+	/**
+	 * Details de la transaction chez flutterwave
+	 */
+	public function flutterwaveTransactionDetails(object $td): array
+	{
+		$transaction_details = [
+			'phone'                   => isset($td->customer) ? $td->customer['phone_number'] ?? '' : '',
+			'indicatif'               => '',
+			'country'                 => '',
+		
+			'amount'                  => $td->amount ?? 0, // $td->amount_settled ?? 0,
+			'fee'                     => $td->app_fee ?? 0,
+			'status'                  => isset($td->status) ? (int) ($td->status === 'status') : 0,
+			'message'                 => $td->processor_response ?? '',	
+			'date'                    => $td->created_at ?? null,
+		
+			'transaction_id'          => $td->flw_ref ?? '',
+			'payment_method'          => '', 
+			'operator'                => isset($td->meta) ? $td->meta['MOMO_NETWORK'] ?? '' : '',
+			'operator_transaction_id' => ''
+		];
+
+		if (isset($td->meta)) {
+			$transaction_details['payment_method'] = match($td->meta['MOMO_NETWORK'] ?? '') {
+				'ORANGEMONEY'    => 'OM',
+				'MTNMOBILEMONEY' => 'MOMO',
+				default          => ''
+			};
+		}
+
+		return $transaction_details;
+	}
+
 	
 	/**
 	 * Verifie le statut d'une tansaction 
@@ -99,9 +163,12 @@ class Payment
 	 * 
 	 * @return array [int status, array details]
 	 */
-	public static function check(string $id_transaction): array
+	public function check(string $id_transaction): array
 	{
-		return  static::instance()->checkMonetbil($id_transaction);
+		return match($this->service) {
+			self::FLUTTERWAVE => $this->checkFlutterwave($id_transaction),
+			default           => $this->checkMonetbil($id_transaction),
+		};
 	}
 
 	/**
@@ -127,30 +194,72 @@ class Payment
 	}
 
 	/**
+	 * [Verification du paiement chez flutterwave]
+	 * 
+	 * @param  string $id_transaction l'id de la transaction
+	 * 
+	 * @return array [int status, array details]
+	 */
+	private function checkFlutterwave(string $id_transaction): array 
+	{
+		$curl = curl_init();
+
+		curl_setopt_array($curl, [
+			CURLOPT_URL            => sprintf($this->flutterwave_endpoint_check, $id_transaction),
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING       => "",
+			CURLOPT_MAXREDIRS      => 10,
+			CURLOPT_TIMEOUT        => 30,
+			CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST  => "GET",
+			CURLOPT_HTTPHEADER     => ["authorization: Bearer " . env('FLUTTERWAVE.SECRET_KEY')],
+		]);
+
+		$json = curl_exec($curl);
+		$err = curl_error($curl);
+		curl_close($curl);
+
+		$json        = $this->curlResponse($json, $err);
+		$result      = json_decode($json, true);
+		$status      = 0;
+		$transaction = [];
+
+		if (is_array($result) && array_key_exists('data', $result)) {
+			$transaction = $result['data'];
+			$status      = (int) ($transaction['status'] === 'successful');
+		}
+
+		return compact('transaction', 'status');
+	}
+
+	/**
 	 * Initie le formulaire de paiement
 	 * 
 	 * @param  array  $data les donnees
 	 * 
-	 * @return string l'url de paiement
+	 * @return array|string
 	 */
-	public static function init(array $data): string
+	public function init(array $data)
 	{
 		if (empty($data['amount']) || !is_int($data['amount'])) {
 			throw new Exception('Montant de la transaction non défini');
 		}
+		
+		helper('assets');
 
-		return self::instance()->initMonetbil($data);
+		$ref = self::generateRef($data);
+
+		return match($this->service) {
+			self::FLUTTERWAVE => $this->initFlutterwave($data, $ref),
+			default       => $this->initMonetbil($data, $ref),
+		};
 	}
 
 	/**
 	 * initialisation du formulaire de paiement chez monetbil
 	 */
-	private function initMonetbil(array $data): string
+	private function initMonetbil(array $data, string $ref): string
 	{
-		helper('assets');
-
-		$ref = self::generateRef($data);
-
 		$json = $this->curlInit([
 			'amount'      => $data['amount'],
 			// 'phone'       => $data['phone'] ?? '',
@@ -158,9 +267,9 @@ class Payment
 			'country'     => 'CM',
 			'currency'    => 'XAF',
 			'payment_ref' => $ref,
-			'return_url'  => link_to('recharge'),
-			'notify_url'  => link_to('payment.notify', $ref),
-			'cancel_url'  => link_to('recharge'),
+			'return_url'  => link_to('recharge', ['service' => self::MONETBIL]),
+			'notify_url'  => link_to('payment.notify', $ref, ['service' => self::MONETBIL]),
+			'cancel_url'  => link_to('recharge', ['service' => self::MONETBIL]),
 			'logo'        => img_url('logo/logo-mini.jpg'),
 		]);
 
@@ -172,6 +281,29 @@ class Payment
 		}
 
 		return $payment_url;
+	}
+
+	private function initFlutterwave(array $data, string $ref)
+	{
+		return [
+			'public_key'      => env('FLUTTERWAVE.PUBLIC_KEY'),
+			'tx_ref'          => $ref,
+			'amount'          => $data['amount'],
+			'currency'        => 'XAF',
+			'payment_options' => 'mobilemoneyfranco',
+			'redirect_url'    => url_to('recharge', ['service' => self::FLUTTERWAVE]),
+			'meta'            => ['user_id' => $data['user'], 'fee' => $data['frais']],
+			'customer' => [
+				'email'        => $data['useremail'] ?? config('mail.from.address'),
+				'phone_number' => $data['phone'],
+				'name'         => $data['username'] ?? config('mail.from.name'),
+			],
+			'customizations' => [
+				'title' => config('app.name'),
+				'description' => 'Payment for an awesome cruise',
+				'logo' => img_url('logo/logo-mini.jpg'),
+			],
+		];
 	}
 
 	/**

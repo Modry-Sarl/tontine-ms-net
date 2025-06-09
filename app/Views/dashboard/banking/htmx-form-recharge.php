@@ -16,7 +16,7 @@
         </div>
     <?php endif ?>
 
-    <?php if (!empty($payment_url)) : ?>
+    <?php if (!empty($payment)) : ?>
         <fieldset class="paiement-form">
             <p class="text-center">
                 Vous êtes sur le point de recharger 
@@ -24,10 +24,20 @@
                 dans votre compte MS.
             </p>
             <hr/><br/>
-            <script type="text/javascript" src="https://fr.monetbil.com/widget/v2/monetbil.min.js"></script>
-            <form method="post" action="<?= $payment_url ?>" data-monetbil="form">
-                <button type="submit" class="btn btn-primary btn-lg btn-block">Recharger maintenant</button>
-            </form>
+            <?php if (isset($service) && $service === \App\MS\Payment::MONETBIL): ?>
+                <script type="text/javascript" src="https://fr.monetbil.com/widget/v2/monetbil.min.js"></script>
+                <form method="post" action="<?= $payment ?>" data-monetbil="form">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Recharger maintenant</button>
+                </form>
+            <?php elseif (isset($service) && $service === \App\MS\Payment::FLUTTERWAVE): ?>
+                <script src="https://checkout.flutterwave.com/v3.js"></script>
+                <script>
+                    function makePayment() {
+                        FlutterwaveCheckout(<?= json_encode($payment) ?>);
+                    }
+                </script>
+                <button type="button" onclick="makePayment()" class="btn btn-primary btn-lg btn-block">Recharge ssr maintenant</button>
+            <?php endif; ?>
         </fieldset>
     <?php endif ?>
 

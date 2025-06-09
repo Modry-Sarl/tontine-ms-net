@@ -21,18 +21,20 @@ class BankingController extends AppController
             $data = [];
         }
 
-        $payment_ref = $this->request->payment_ref;
+        if (empty($ref = $this->request->payment_ref)) { // monetbil
+            $ref = $this->request->tx_ref; // flutterwave
+        }
         
         $data['status'] = $this->request->status;
 
-        if ($data['status'] === 'cancelled') {
-            Payment::removeRef($payment_ref);
+        if (in_array($data['status'], ['cancelled'])) {
+            Payment::removeRef($ref);
         }
-        else if ($data['status'] === 'success') {
+        else if (in_array($data['status'], ['success', 'successful'])) {
             /** @var PaymentController $controller */
             $controller = Services::factory(PaymentController::class);
             $controller->initialize($this->request, $this->response, $this->logger);
-            $controller->notify($payment_ref);
+            $controller->notify($ref);
 
             return redirect()->route('recharge')->with('success', 'Recharge effectuée avec succès');
         }
@@ -65,12 +67,15 @@ class BankingController extends AppController
 
         try {
             $data = [
-                'payment_url' => Payment::init([
+                'payment' => Payment::service(Payment::FLUTTERWAVE)->init([
                     'frais'  => $frais,
                     'amount' => (int) ($montant + $frais),
                     'phone'  => simple_tel($this->user->tel),
                     'user'   => $this->user->utilisateur->id,
+                    'username' => $this->user->username,
+                    'useremail' => $this->user->getEmail(),
                 ]),
+                'service' => Payment::FLUTTERWAVE,
                 'montant' => $validated['montant'],
             ];
         } catch (Exception $e) {

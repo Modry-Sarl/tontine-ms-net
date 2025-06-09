@@ -39,9 +39,11 @@ class PaymentController extends AppController
             return $this->response->withStatus(StatusCode::UNAUTHORIZED);
         }
 
-        ['status' => $status, 'transaction' => $transaction] = Payment::check($id_transaction);
+        $paymentInstance = Payment::service($this->request->query('service', Payment::MONETBIL));
+
+        ['status' => $status, 'transaction' => $transaction] = $paymentInstance->check($id_transaction);
         
-        $details = Payment::getTransactionDetails($transaction);
+        $details = $paymentInstance->getTransactionDetails($transaction);
         $amount = to_dollar($payement['amount'] ?: $details['amount'], 'entree');
         
         Transaction::create([
