@@ -146,9 +146,9 @@ class Payment
 
 		if (isset($td->meta)) {
 			$transaction_details['payment_method'] = match($td->meta['MOMO_NETWORK'] ?? '') {
-				'ORANGEMONEY'    => 'OM',
-				'MTNMOBILEMONEY' => 'MOMO',
-				default          => ''
+				                 'ORANGEMONEY' => 'OM',
+				'MTNMOBILEMONEY', 'MTN'        => 'MOMO',
+				                 default       => ''
 			};
 		}
 
@@ -290,10 +290,11 @@ class Payment
 			'tx_ref'          => $ref,
 			'amount'          => $data['amount'],
 			'currency'        => 'XAF',
+			'country'         => 'CM',
 			'payment_options' => 'mobilemoneyfranco',
 			'redirect_url'    => url_to('recharge', ['service' => self::FLUTTERWAVE]),
 			'meta'            => ['user_id' => $data['user'], 'fee' => $data['frais']],
-			'customer' => [
+			'customer'        => [
 				'email'        => $data['useremail'] ?? config('mail.from.address'),
 				'phone_number' => $data['phone'],
 				'name'         => $data['username'] ?? config('mail.from.name'),
@@ -311,7 +312,7 @@ class Payment
 	 * 
 	 * @param  array  $data les donnees
 	 */
-	public static function send(array $data, bool $eum = false): array
+	public function send(array $data, bool $eum = false): array
 	{
 		if (empty($data['amount']) || !is_numeric($data['amount'])) {
 			throw new Exception('Montant de la transaction non défini');
@@ -324,7 +325,12 @@ class Payment
 			$data['operator'] = 'CM_EUMM';
 		}
 
-		return self::instance()->sendMonetbil($data);
+		helper('scl');
+
+		return match($this->service) {
+			self::FLUTTERWAVE => $this->sendFlutterwave($data),
+			default           => $this->sendMonetbil($data),
+		};
 	}
 
 	/**
@@ -332,8 +338,6 @@ class Payment
 	 */
 	private function sendMonetbil(array $data): array
 	{
-		helper('scl');
-
 		$post = [
 			'service_key'       => env('MONETBIL.PUBLIC_KEY'),
 			'service_secret'    => env('MONETBIL.SECRET_KEY'),
@@ -346,6 +350,50 @@ class Payment
 		}
 		
 		$json = $this->curlSend($post);
+		
+		return json_decode($json, true);		
+	}
+
+	/**
+	 * Envoie d'argent vers un compte mobile chez flutterwave
+	 */
+	private function sendFlutterwave(array $data): array
+	{
+		$post = [
+			'account_bank'      => 'ORANGEMONEY',
+			'account_number'    => '237' . $data['phone'],
+			'amount'            => (int) $data['amount'],
+			'currency'          => 'XAF',
+			'beneficiary_name'  => $data['username'] ?? '',
+			'meta'              => [
+				'sender'         => config('app.name'),
+				'sender_country' => 'CM',
+				'mobile_number'  => '237691889587',
+			],
+		];
+
+		$curl = curl_init();
+
+		curl_setopt_array($curl, [
+			CURLOPT_URL => "https://api.flutterwave.com/v3/transfers",
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => "",
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 30,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => "POST",
+			CURLOPT_POSTFIELDS => json_encode($post),
+			CURLOPT_HTTPHEADER => [
+				"authorization: Bearer " . env('FLUTTERWAVE.SECRET_KEY'),
+				"content-type: application/json"
+			],
+		]);
+
+		$json = curl_exec($curl);
+		$err = curl_error($curl);
+		curl_close($curl);
+
+		$json = $this->curlResponse($json, $err);
 		
 		return json_decode($json, true);		
 	}

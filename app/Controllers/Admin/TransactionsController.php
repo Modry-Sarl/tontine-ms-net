@@ -67,9 +67,10 @@ class TransactionsController extends AppController
                 $retrait->user->decrement('solde_' . $retrait->compte, $retrait->montant);
                 
                 $montant = to_cfa($retrait->montant);
-                $sender = Payment::send([
+                $sender = Payment::service(Payment::FLUTTERWAVE)->send([
                     'amount' => $montant - ($montant * 0.05),
                     'phone'  => simple_tel($retrait->tel),
+                    'username'  => $retrait->user->user->username,
                 ], $retrait->meta['use_eum'] ?? false);
                 
                 if (empty($sender) || !is_array($sender) || !isset($sender['success']) || $sender['success'] == false) {
