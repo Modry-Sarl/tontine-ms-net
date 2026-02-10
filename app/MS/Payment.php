@@ -30,7 +30,12 @@ class Payment
 	/**
 	 * Endpoint de l'api d'initialisation de paiement monetbil
 	 */
-	private string $endpoint_init = 'https://api.monetbil.com/widget/v2.1/%s';
+	private string $monetbil_endpoint_init = 'https://api.monetbil.com/widget/v2.1/%s';
+	
+	/**
+	 * Endpoint de l'api d'initialisation de paiement flutterwave
+	 */
+	private string $flutterwave_endpoint_init = 'https://api.flutterwave.com/v3/payments';
 
 	/**
 	 * Endpoint de l'api de retrait d'argent monetbil
@@ -237,7 +242,7 @@ class Payment
 	 * 
 	 * @param  array  $data les donnees
 	 * 
-	 * @return array|string
+	 * @return string
 	 */
 	public function init(array $data)
 	{
@@ -283,10 +288,9 @@ class Payment
 		return $payment_url;
 	}
 
-	private function initFlutterwave(array $data, string $ref)
+	private function initFlutterwave(array $data, string $ref): string
 	{
-		return [
-			'public_key'      => env('FLUTTERWAVE.PUBLIC_KEY'),
+		$post = [
 			'tx_ref'          => $ref,
 			'amount'          => $data['amount'],
 			'currency'        => 'XAF',
@@ -296,7 +300,7 @@ class Payment
 			'meta'            => ['user_id' => $data['user'], 'fee' => $data['frais']],
 			'customer'        => [
 				'email'        => $data['useremail'] ?? config('mail.from.address'),
-				'phone_number' => $data['phone'],
+				'phonenumber' => $data['phone'],
 				'name'         => $data['username'] ?? config('mail.from.name'),
 			],
 			'customizations' => [
@@ -305,6 +309,34 @@ class Payment
 				'logo' => img_url('logo/logo-mini.jpg'),
 			],
 		];
+
+		$ch = curl_init();
+
+		curl_setopt_array($ch, [
+			CURLOPT_URL => $this->flutterwave_endpoint_init,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_POST => true,
+			CURLOPT_POSTFIELDS => json_encode($post),
+			CURLOPT_HTTPHEADER => [
+				'Authorization: Bearer ' . env('FLUTTERWAVE.SECRET_KEY'),
+				'Content-Type: application/json'
+			]
+		]);
+
+		$response = curl_exec($ch);
+		$error = curl_error($ch);
+		curl_close($ch);
+
+		$json   = $this->curlResponse($response, $error);
+		$result = json_decode($json, true);
+
+		$payment_url = '';
+		if (is_array($result) && array_key_exists('data', $result)) {
+			$payment_url = $result['data']['link'] ?? '';
+		}
+
+		return $payment_url;
+
 	}
 
 	/**
@@ -428,7 +460,7 @@ class Payment
 	{
 		$ch = curl_init();
 
-		curl_setopt($ch, CURLOPT_URL, sprintf($this->endpoint_init, env('MONETBIL.PUBLIC_KEY')));
+		curl_setopt($ch, CURLOPT_URL, sprintf($this->monetbil_endpoint_init, env('MONETBIL.PUBLIC_KEY')));
 		curl_setopt($ch, CURLOPT_HTTPGET, 1);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
