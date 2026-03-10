@@ -236,6 +236,8 @@ class TransactionsController extends AppController
      */
     private function transfertFund()
     {
+        cache()->deleteMany(['tranzak_account_collection', 'tranzak_account_payout']);
+        
         $paymentInstance = Payment::service(Payment::TRANZAK);
 
         $solde_collecte = $paymentInstance->tranzakAccountBalance('collection');

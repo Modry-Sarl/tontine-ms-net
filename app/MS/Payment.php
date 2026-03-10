@@ -563,7 +563,7 @@ class Payment
 		}
 
 		if ($data['status'] === 'PROCESSING') {
-			$maxAttemps = 3;
+			$maxAttemps = 10;
 			$i = 0;
 
 			while($i < $maxAttemps) {
