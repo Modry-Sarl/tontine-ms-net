@@ -565,6 +565,7 @@ class Payment
 		if ($data['status'] === 'PROCESSING') {
 			$maxAttemps = 10;
 			$i = 0;
+			sleep(5); // perf, autant mieux patienter d'abord avant de lancer la verification
 
 			while($i < $maxAttemps) {
 				$result = $this->tranzakClient()->get('xp021/v1/transfer/details', ['transferId' => $data['transferId']])->json('data');
