@@ -557,6 +557,8 @@ class Payment
 		];
 
 		if ($data['status'] === 'SUCCESSFUL') {
+			cache()->deleteMany(['tranzak_account_collection', 'tranzak_account_payout']);
+
 			return $returner($data);
 		}
 
@@ -568,6 +570,8 @@ class Payment
 				$result = $this->tranzakClient()->get('xp021/v1/transfer/details', ['transferId' => $data['transferId']])->json('data');
 
 				if ($result['status'] === 'SUCCESSFUL') {
+					cache()->deleteMany(['tranzak_account_collection', 'tranzak_account_payout']);
+
 					return $returner($result);
 				}
 
@@ -706,13 +710,29 @@ class Payment
 	 * si le compte retrait n'est pas approvisionné, les retraits ne pourront pas être fait
 	 * ainsi donc, apres chaque collecte reussi, nous devons transferer le montant collecté dans le compte de paiement
 	 */
-	private function tranzakTopUpPayoutAccount($amount): void
+	public function tranzakTopUpPayoutAccount($amount): array
 	{
-		$this->tranzakClient()->post('xp021/v1/transfer/payout-account-topup', [
+		$response = $this->tranzakClient()->post('xp021/v1/transfer/payout-account-topup', [
 			'amount'               => $amount,
 			'currencyCode'         => 'XAF',
 			'customTransactionRef' => uniqid(more_entropy: true),
 		])->json();
+
+		cache()->deleteMany(['tranzak_account_collection', 'tranzak_account_payout']);
+
+		return $response;
+	}
+
+	/**
+	 * @param 'collection' | 'payout' $account
+	 */
+	public function tranzakAccountBalance(string $account): int
+	{
+		return cache()->remember('tranzak_account_' . $account, HOUR, function () use($account) {
+			$data = $this->tranzakClient()->post(sprintf('xp021/v1/account/%s-account-details', $account))->json('data');
+
+			return $data['availableBalance'];
+		});
 	}
 
 	private function tranzakClient(): Request

@@ -19,6 +19,11 @@ class TransactionsController extends AppController
      */
     public function formApprobations()
     {
+        $paymentInstance = Payment::service(Payment::TRANZAK);
+
+        $data['solde_collecte'] = $paymentInstance->tranzakAccountBalance('collection');
+        $data['solde_paiement'] = $paymentInstance->tranzakAccountBalance('payout');
+
         $data['tab'] = $statut = $this->request->string('tab', 'pending');
 
         if ($statut === 'massive') { // retraits en masse
@@ -36,9 +41,13 @@ class TransactionsController extends AppController
     public function processApprobations()
     {
         $validated = $this->request->validate([
-            'action' => 'required|in:validated,rejected',
-            'ref'    => 'required:exists:retraits',
+            'action' => 'required|in:validated,rejected,transfert-fund',
+            'ref'    => 'required_unless:action,transfert-fund|exists:retraits',
         ]);
+
+        if ($validated['action'] === 'transfert-fund') {
+            return $this->transfertFund();
+        }
 
         if ('massive' !== $tab = $this->request->string('tab')) {
             $tab = $validated['action'];
@@ -67,7 +76,7 @@ class TransactionsController extends AppController
                 $retrait->user->decrement('solde_' . $retrait->compte, $retrait->montant);
                 
                 $montant = to_cfa($retrait->montant);
-                $sender = Payment::service(Payment::FLUTTERWAVE)->send([
+                $sender = Payment::service(Payment::TRANZAK)->send([
                     'amount' => $montant - ($montant * 0.05),
                     'phone'  => simple_tel($retrait->tel),
                     'username'  => $retrait->user->user->username,
@@ -220,5 +229,36 @@ class TransactionsController extends AppController
         }
 
         return $return;
+    }
+
+    /**
+     * Transfert les fond du compte Tranzak de collecte vers le compte de paiement
+     */
+    private function transfertFund()
+    {
+        $paymentInstance = Payment::service(Payment::TRANZAK);
+
+        $solde_collecte = $paymentInstance->tranzakAccountBalance('collection');
+
+        if ($solde_collecte > 0) {
+            $tab      = $this->request->query('tab', 'pending');
+            $response = $paymentInstance->tranzakTopUpPayoutAccount($solde_collecte);
+            
+            if ($response['success']) {
+                $data = $response['data'];
+
+                if ($data['status'] === 'SUCCESSFUL') {
+                    return redirect()->to(link_to('admin.transactions.approbations', compact('tab')))
+                                    ->with('success', 'Transfert de fonds éffectué avec succès'); 
+                }
+            }
+            
+            $message = $response['errorMsg'] ?? 'Une erreur s\'est produite lors du transfert';
+            
+            return redirect()->to(link_to('admin.transactions.approbations', compact('tab')))
+                                    ->withErrors($message); 
+        }
+
+        return back();
     }
 }
