@@ -35,7 +35,7 @@ Route::middleware(['guest'])->group(function() {
 Route::name('logout')->delete('/logout', 'AuthController::logout');
 
 Route::prefix('payment')->controller(PaymentController::class)->group(function() {
-    Route::name('payment.notify')->match(['get', 'post'], '/notify/(:any)', 'notify');
+    Route::name('payment.notify')->match(['get', 'post'], '/notify/(:any)', 'notify/$1');
 });
 
 Route::middleware('session')->group(function() {    

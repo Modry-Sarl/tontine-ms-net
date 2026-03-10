@@ -21,13 +21,21 @@ class BankingController extends AppController
             $data = [];
         }
 
-        if (empty($ref = $this->request->payment_ref)) { // monetbil
-            $ref = $this->request->tx_ref; // flutterwave
-        }
+        $ref = $this->request->payment_ref ?? ( // monetbil
+            $this->request->tx_ref ?? ( //flutterwave
+                $this->request->mchTransactionRef // tranzak
+            )
+        );
         
-        $data['status'] = $this->request->status;
+        if ($this->request->has('status')) {
+            $data['status'] = $this->request->status; // monetbil && flutterwave
+        } else if ($this->request->has('success')) {
+            $data['status'] = $this->request->boolean('success') ? 'successful' : 'cancelled';
+        } else {
+            $data['status'] = 'undefined';
+        }
 
-        if (in_array($data['status'], ['cancelled'])) {
+        if (in_array($data['status'], ['cancelled']) && !empty($ref)) {
             Payment::removeRef($ref);
         }
         else if (in_array($data['status'], ['success', 'successful'])) {
@@ -63,19 +71,19 @@ class BankingController extends AppController
         }
 
         $montant = !is_online() ? 100 : to_cfa($validated['montant'], 'entree');
-        $frais   = ceil(0.01 * $montant);
+        $frais   = ceil(0.013 * $montant);
 
         try {
             $data = [
-                'payment' => Payment::service(Payment::FLUTTERWAVE)->init([
+                'payment' => Payment::service(Payment::TRANZAK)->init([
                     'frais'  => $frais,
-                    'amount' => (int) ($montant + $frais),
+                    'amount' => (int) ceil($montant + $frais),
                     'phone'  => simple_tel($this->user->tel),
                     'user'   => $this->user->utilisateur->id,
                     'username' => $this->user->username,
                     'useremail' => $this->user->getEmail(),
                 ]),
-                'service' => Payment::FLUTTERWAVE,
+                'service' => Payment::TRANZAK,
                 'montant' => $validated['montant'],
             ];
         } catch (Exception $e) {

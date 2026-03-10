@@ -20,7 +20,9 @@ class PaymentController extends AppController
      */
     public function notify($ref)
     {
-        if (empty($id_transaction = $this->request->transaction_id)) {
+        $id_transaction = $this->request->transaction_id ?? $this->request->requestId;
+
+        if (empty($id_transaction)) {
             return $this->response->withStatus(StatusCode::GONE);
         }
 
@@ -42,16 +44,16 @@ class PaymentController extends AppController
         $paymentInstance = Payment::service($this->request->query('service', Payment::MONETBIL));
 
         ['status' => $status, 'transaction' => $transaction] = $paymentInstance->check($id_transaction);
-        
+
         $details = $paymentInstance->getTransactionDetails($transaction);
-        $amount = to_dollar($payement['amount'] ?: $details['amount'], 'entree');
+        $montant = $payement['amount'] ?: $details['amount'];
         
         Transaction::create([
             'user_id'                 => $user->id,
             'numero'                  => $details['phone'] ?? $payement['phone'],
             'ref'                     => $ref,
-            'montant'                 => $amount,
-            'frais'                   => to_dollar($details['fee'], 'entree'),
+            'montant'                 => to_dollar($montant, 'entree'),
+            'frais'                   => to_dollar($payement['frais'], 'entree'),
             'type'                    => 'entree',
             'statut'                  => $status ?: $details['status'],
             'message'                 => $details['message'],
@@ -64,7 +66,7 @@ class PaymentController extends AppController
         ]);
 
         if ($status == 1) {
-            $amount -= to_dollar($payement['frais'] ?? 0, 'entree');
+            $amount = to_dollar($montant - ($payement['frais'] ?? 0), 'entree');
 
             if (intval($amount) == Constants::MASSIVE_WITHDRAWAL_REFUND_AMOUNT && $user->ref === Constants::MASSIVE_WITHDRAWAL_REFUND_ACCOUNT) {
                 $amount -= Constants::MASSIVE_WITHDRAWAL_SUBSTRACTED_AMOUNT; // on retire 10.000 pour alimenter le compte des retraits en masse 

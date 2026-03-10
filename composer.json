@@ -16,7 +16,9 @@
     },
     "require": {
         "blitz-php/framework": "^0.12",
+        "blitz-php/http-client": "^0.0.2",
         "blitz-php/schild": "^1.5",
+        "flutterwavedev/flutterwave-v3": "^1.1",
         "laminas/laminas-escaper": "^2.13"
     },
     "require-dev": {

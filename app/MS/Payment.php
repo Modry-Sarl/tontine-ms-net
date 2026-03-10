@@ -3,6 +3,8 @@
 namespace App\MS;
 
 use BlitzPHP\Facades\Storage;
+use BlitzPHP\HttpClient\Config\Services;
+use BlitzPHP\HttpClient\Request;
 use BlitzPHP\Traits\SingletonTrait;
 use Exception;
 
@@ -15,6 +17,7 @@ class Payment
 
 	const FLUTTERWAVE = 'flutterwave';
 	const MONETBIL = 'monetbil';
+	const TRANZAK = 'tranzak';
 
 	/**
 	 * Langue du widget
@@ -51,6 +54,11 @@ class Payment
 	 * Endpoint de l'api de verification de paiement flutterwave
 	 */
 	private string $flutterwave_endpoint_check = 'https://api.flutterwave.com/v3/transactions/%s/verify';
+
+	/**
+	 * Base Url des api tranzak
+	 */
+	private string $tranzak_base_url = 'https://dsapi.tranzak.me';
 
 
 	private array $transaction_details = [];
@@ -90,6 +98,7 @@ class Payment
 
 		return match($this->service) {
 			self::FLUTTERWAVE => $this->flutterwaveTransactionDetails($td),
+			self::TRANZAK     => $this->tranzakTransactionDetails($td),
 			default           => $this->monetbilTransactionDetails($td),
 		};
 	}
@@ -160,18 +169,53 @@ class Payment
 		return $transaction_details;
 	}
 
+	/**
+	 * Details de la transaction chez tranzak
+	 */
+	public function tranzakTransactionDetails(object $td): array
+	{
+		$transaction_details = [
+			'phone'                   => isset($td->payer) ? $td->payer->accountId ?? '' : '',
+			'indicatif'               => '',
+			'country'                 => isset($td->payer) ? $td->payer->countryCode ?? '' : '',
+		
+			'amount'                  => isset($td->amount) ? $td->amount : 0,
+			'fee'                     => isset($td->payer) ? $td->payer->fee ?? 0 : 0,
+			'status'                  => isset($td->status) ? (int) ($td->status === 'SUCCESSFUL') : 0,
+			'message'                 => isset($td->transactionStatus) ? $td->transactionStatus : '',	
+			'date'                    => isset($td->createdAt) ? $td->createdAt : null,
+		
+			'transaction_id'          => isset($td->transactionId) ? $td->transactionId : '',
+			'payment_method'          => '', 
+			'operator'                => isset($td->payer) ? $td->payer->paymentMethod ?? '' : '',
+			'operator_transaction_id' => isset($td->partnerTransactionId) ? $td->partnerTransactionId : ''
+		];
+
+		if (isset($td->payer)) {
+			$transaction_details['payment_method'] = match($td->payer->paymentMethod ?? '') {
+				'Orange Money'      => 'OM',
+				'CM_MTNMOBILEMONEY' => 'MOMO',
+				'CM_EUMM'           => 'EUM',
+				default             => '',
+			};
+		}
+
+		return $transaction_details;
+	}
+
 	
 	/**
 	 * Verifie le statut d'une tansaction 
 	 * 
 	 * @param  string $id_transaction l'id de la transaction
 	 * 
-	 * @return array [int status, array details]
+	 * @return array{status: int, transaction: array}
 	 */
 	public function check(string $id_transaction): array
 	{
 		return match($this->service) {
 			self::FLUTTERWAVE => $this->checkFlutterwave($id_transaction),
+			self::TRANZAK     => $this->checkTranzak($id_transaction),
 			default           => $this->checkMonetbil($id_transaction),
 		};
 	}
@@ -238,6 +282,35 @@ class Payment
 	}
 
 	/**
+	 * [Verification du paiement chez tranzak]
+	 * 
+	 * @param  string $id_transaction l'id de la transaction
+	 * 
+	 * @return array{status: int, transaction: array}
+	 */
+	private function checkTranzak(string $id_transaction): array 
+	{
+		$response = $this->tranzakClient()
+			->get('xp021/v1/request/details', ['requestId' => $id_transaction])
+			->json();
+
+		$status      = 0;
+		$transaction = [];
+
+		if (is_array($response) && array_key_exists('data', $response)) {
+			$transaction = $response['data'];
+			$status      = (int) ($transaction['status'] === 'SUCCESSFUL');
+		}
+
+		if ($status == 1) {
+			// la collecte s'est bien passé alors on transfert les fonds
+			$this->tranzakTopUpPayoutAccount($transaction['amount']);
+		}
+
+		return compact('transaction', 'status');
+	}
+
+	/**
 	 * Initie le formulaire de paiement
 	 * 
 	 * @param  array  $data les donnees
@@ -256,6 +329,7 @@ class Payment
 
 		return match($this->service) {
 			self::FLUTTERWAVE => $this->initFlutterwave($data, $ref),
+			self::TRANZAK => $this->initTranzak($data, $ref),
 			default       => $this->initMonetbil($data, $ref),
 		};
 	}
@@ -339,6 +413,32 @@ class Payment
 
 	}
 
+	private function initTranzak(array $data, string $ref): string
+	{
+		$response = $this->tranzakClient()->post('xp021/v1/request/create', [
+			'amount'              => $data['amount'],
+			'currencyCode'        => 'XAF',
+			'description'         => 'Recharge de compte Virmo Cash',
+			'mchTransactionRef'   => $ref,
+			'returnUrl'           => link_to('recharge', ['service' => self::TRANZAK, 'mchTransactionRef' => $ref]),
+			'cancelUrl'           => link_to('recharge', ['service' => self::TRANZAK, 'mchTransactionRef' => $ref]),
+			'callbackUrl'         => link_to('payment.notify', $ref, ['service' => self::TRANZAK]),
+			'receivingEntityName' => config('app.name'),
+			'customization'       => [
+				'logoUrl' => img_url('logo/logo-mini.jpg'),
+				'title'   => config('app.name'),
+			],
+		])->json();
+
+		$payment_url = '';
+		if (is_array($response) && array_key_exists('data', $response)) {
+			$links = $response['data']['links'] ?? [];
+			$payment_url = $links['paymentAuthUrl'] ?? '';
+		}
+
+		return $payment_url;
+	}
+
 	/**
 	 * Envoie l'argent vers un compte mobile
 	 * 
@@ -361,6 +461,7 @@ class Payment
 
 		return match($this->service) {
 			self::FLUTTERWAVE => $this->sendFlutterwave($data),
+			self::TRANZAK     => $this->sendTranzak($data),
 			default           => $this->sendMonetbil($data),
 		};
 	}
@@ -428,6 +529,54 @@ class Payment
 		$json = $this->curlResponse($json, $err);
 		
 		return json_decode($json, true);		
+	}
+
+	/**
+	 * Envoie d'argent vers un compte mobile chez transak
+	 */
+	private function sendTranzak(array $data): array
+	{
+		set_time_limit(0);
+
+		$data = $this->tranzakClient()->post('xp021/v1/transfer/to-mobile-wallet', [
+			'amount'               => $data['amount'],
+			'currencyCode'         => 'XAF',
+			'description'          => 'Paiement Virmo Cash',
+			'payeeAccountId'       => '+237' . $data['phone'],
+			'customTransactionRef' => scl_generateKeys(15, 3),
+			'verifyPayeeName'      => false,
+		])->json('data');
+
+		$returner = fn(array $d) => [
+			'success'                 => true,
+			'message'                 => $d['status'],
+			'phonenumber'             => str_replace('+', '', $d['payeeAccountId']),
+			'amount'                  => $d['amount'],
+			'operator'                => $d['destinationServiceName'],
+			'operator_transaction_id' => $d['partnerTransactionId'] ?? '',
+		];
+
+		if ($data['status'] === 'SUCCESSFUL') {
+			return $returner($data);
+		}
+
+		if ($data['status'] === 'PROCESSING') {
+			$maxAttemps = 3;
+			$i = 0;
+
+			while($i < $maxAttemps) {
+				$result = $this->tranzakClient()->get('xp021/v1/transfer/details', ['transferId' => $data['transferId']])->json('data');
+
+				if ($result['status'] === 'SUCCESSFUL') {
+					return $returner($result);
+				}
+
+				sleep(3);
+				$i++;
+			}
+		}
+
+		return ['success' => false, 'message' => 'Error for transfert'];
 	}
 
 	/**
@@ -548,5 +697,49 @@ class Payment
 		}
 
 		return $data ?? [];		
+	}
+
+	/**
+	 * Transfert un montant du compte "collecte" vers le compte "paiement"
+	 * 
+	 * ceci est necessaire car Tranzak gere les collecte et les retraits dans 2 comptes differents
+	 * si le compte retrait n'est pas approvisionné, les retraits ne pourront pas être fait
+	 * ainsi donc, apres chaque collecte reussi, nous devons transferer le montant collecté dans le compte de paiement
+	 */
+	private function tranzakTopUpPayoutAccount($amount): void
+	{
+		$this->tranzakClient()->post('xp021/v1/transfer/payout-account-topup', [
+			'amount'               => $amount,
+			'currencyCode'         => 'XAF',
+			'customTransactionRef' => uniqid(more_entropy: true),
+		])->json();
+	}
+
+	private function tranzakClient(): Request
+	{
+		return Services::httpclient()->withToken($this->getTranzakToken())
+			->baseUrl($this->tranzak_base_url)
+			->asJson();
+	}
+
+	private function getTranzakToken(): string 
+	{
+		if (empty($token = cache()->get('tranzak_access_token'))) {
+			$request = Services::httpclient()
+				->baseUrl($this->tranzak_base_url)
+				->asJson()
+				->post('auth/token', [
+					'appId' => env('TRANZAK_APP_ID'),
+  					'appKey' => env('TRANZAK_APP_KEY'),
+				]);
+
+			$response = $request->json('data');
+
+			$token = $response['token'];
+
+			cache()->set('tranzak_access_token', $token, $response['expiresIn'] - 400);
+		}
+
+        return $token;
 	}
 }

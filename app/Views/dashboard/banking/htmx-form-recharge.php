@@ -28,9 +28,13 @@
                 $method = 'post'; ?>
                 <script type="text/javascript" src="https://fr.monetbil.com/widget/v2/monetbil.min.js"></script>
             <?php } ?>
-            <form method="<?= $method ?>" action="<?= $payment ?>" data-monetbil="form">
-                <button type="submit" class="btn btn-primary btn-lg btn-block">Recharger maintenant</button>
-            </form>
+            <?php if (isset($service) && $service === \App\MS\Payment::TRANZAK) : ?>
+                <a role="button" href="<?= $payment ?>" class="btn btn-primary btn-lg btn-block">Recharger maintenant</a>
+            <?php else: ?>
+                <form method="<?= $method ?>" action="<?= $payment ?>" data-monetbil="form">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Recharger maintenant</button>
+                </form>
+            <?php endif; ?>
         </fieldset>
     <?php endif ?>
 

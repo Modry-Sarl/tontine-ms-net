@@ -73,7 +73,10 @@ class TransactionsController extends AppController
                     'username'  => $retrait->user->user->username,
                 ], $retrait->meta['use_eum'] ?? false);
                 
-                if (empty($sender) || !is_array($sender) || !isset($sender['success']) || $sender['success'] == false) {
+                $success = (isset($sender['success']) && $sender['success'] == true) 
+                    || (isset($sender['status']) && $sender['status'] == 'SUCCESSFUL');
+                    
+                if (! $success) {
                    throw new Exception('[' . (($sender ?? [])['message'] ?? ''). ']');
                 }
                 
@@ -83,7 +86,7 @@ class TransactionsController extends AppController
                     'montant'                 => to_dollar($sender['amount'] ?? $montant),
                     'frais'                   => 0,
                     'type'                    => 'sortie',
-                    'statut'                  => in_array($sender['success'], ['1', 1]),
+                    'statut'                  => in_array($sender['success'], ['1', 1, true]),
                     'message'                 => $sender['message'],
                     'operateur'               => $sender['operator'] ?? '',
                     'operator_transaction_id' => $sender['operator_transaction_id'],
@@ -106,6 +109,7 @@ class TransactionsController extends AppController
             $db->rollback();
 
             $message = $this->user->id == 110 ? ': ' . $e->getMessage() : '';
+            logger()->info('[PAYMENT WIDRAW]: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
 
             return back()->withErrors('Une erreur s\'est produite lors du transfert' . $message);
         }
