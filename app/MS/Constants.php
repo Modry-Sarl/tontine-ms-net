@@ -16,8 +16,8 @@ class Constants
     /**
      * Valeur du dollar dans le system
      */
-    public const DOLLAR_VALUE = 500;
-    public const DOLLAR_VALUE_ENTREE = 475;
+    public const DOLLAR_VALUE = 475;
+    public const DOLLAR_VALUE_ENTREE = 500;
 
     public const NBR_NIVEAU    = 5;
     public const TOTAL_FILLEUL = 32;
