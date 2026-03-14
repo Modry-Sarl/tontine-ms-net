@@ -3,10 +3,12 @@
 namespace App\Listeners;
 
 use App\Entities\Utilisateur;
+use BlitzPHP\Contracts\Database\ConnectionResolverInterface;
 use BlitzPHP\Contracts\Event\EventInterface;
 use BlitzPHP\Contracts\Event\EventListenerInterface;
 use BlitzPHP\Contracts\Event\EventManagerInterface;
 use BlitzPHP\Database\Config\Services;
+use BlitzPHP\Wolke\Model;
 use BlitzPHP\Wolke\Pagination\Paginator;
 
 class AppListener implements EventListenerInterface
@@ -32,5 +34,9 @@ class AppListener implements EventListenerInterface
             Paginator::viewFactoryResolver(fn() => service('viewer'));
 			Paginator::useBootstrap();
         });
+
+		$event->on('app:init', function() {
+			Model::setConnectionResolver(service('container')->get(ConnectionResolverInterface::class));
+		});
 	}
 }
