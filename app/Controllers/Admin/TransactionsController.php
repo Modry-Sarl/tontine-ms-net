@@ -27,9 +27,9 @@ class TransactionsController extends AppController
         $data['tab'] = $statut = $this->request->string('tab', 'pending');
 
         if ($statut === 'massive') { // retraits en masse
-            $data['approbations'] = Retrait::whereRelation('user', 'ref', '=', Constants::MASSIVE_WITHDRAWAL_ACCOUNT)->sortAsc('statut')->paginate();
+            $data['approbations'] = Retrait::whereRelation('user', 'ref', '=', Constants::MASSIVE_WITHDRAWAL_ACCOUNT)->sortAsc('statut')->latest()->paginate();
         } else {
-            $data['approbations'] = Retrait::with('user')->whereRelation('user', 'ref', '!=', Constants::MASSIVE_WITHDRAWAL_ACCOUNT)->where('statut', $statut)->paginate();
+            $data['approbations'] = Retrait::with('user')->whereRelation('user', 'ref', '!=', Constants::MASSIVE_WITHDRAWAL_ACCOUNT)->where('statut', $statut)->latest()->paginate();
         }
 
         return $this->render('approbations', $data);
