@@ -109,7 +109,7 @@
                         <td>Montant</td>
                         <td><?= $tab === 'massive' ? 'Statut' : 'Utilisateur' ?></td>
                         <td><?= $tab === 'massive' ? 'Date d\'initialisation' : 'Compte' ?></td>
-                        <td>Ref</td>
+                        <?php if ($tab !== 'massive'): ?><td>Demandé le</td><?php endif; ?>
                         <?php if (in_array($tab, ['pending', 'massive'])): ?>
                         <td style="border:none"></td>
                         <?php endif; ?>
@@ -137,7 +137,7 @@
                             <span><?= $retrait->user->user?->username ?></span>
                         <?php endif; ?></td>
                         <td><?= $tab === 'massive' ? $retrait->created_at->format('d/m/Y - H:i') : $retrait->compte ?></td>
-                        <td><?= $retrait->ref ?></td>
+                        <?php if ($tab !== 'massive'): ?><td><?= $retrait->created_at->format('d/m/Y - H:i') ?></td><?php endif; ?>
                         <?php if ($tab === 'pending' || ($tab === 'massive' && $_user->can('admin.process-massive-withdrawal-request'))): ?>
                         <td> 
                             <div class="d-flex">
