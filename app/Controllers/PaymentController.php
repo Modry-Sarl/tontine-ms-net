@@ -14,13 +14,16 @@ class PaymentController extends AppController
      * Cette route est appelé par monetbil quand tout est ok
      * Elle permet donc de mettre a jour le solde du membre en cas de succes
      * 
-     * @param string $reef Reference de paiement
+     * @param string $ref Reference de paiement
      * 
      * @internal Ne fait pas partir des routes connues de la plataforme
      */
     public function notify($ref)
     {
-        $id_transaction = $this->request->transaction_id ?? $this->request->requestId;
+        $service = $this->request->query('service', Payment::MONETBIL);
+        $id_transaction = $service === Payment::SIMPLEPAY
+            ? $this->request->input('data.ref') ?? $this->request->input('ref')
+            : ($this->request->transaction_id ?? $this->request->requestId);
 
         if (empty($id_transaction)) {
             return $this->response->withStatus(StatusCode::GONE);
@@ -41,7 +44,7 @@ class PaymentController extends AppController
             return $this->response->withStatus(StatusCode::UNAUTHORIZED);
         }
 
-        $paymentInstance = Payment::service($this->request->query('service', Payment::MONETBIL));
+        $paymentInstance = Payment::service($service);
 
         ['status' => $status, 'transaction' => $transaction] = $paymentInstance->check($id_transaction);
 

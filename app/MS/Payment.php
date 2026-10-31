@@ -5,6 +5,7 @@ namespace App\MS;
 use App\Services\PaymentProvider\BaseProvider;
 use App\Services\PaymentProvider\Flutterwave;
 use App\Services\PaymentProvider\Monetbil;
+use App\Services\PaymentProvider\SimplePay;
 use App\Services\PaymentProvider\Tranzak;
 use BlitzPHP\Facades\Storage;
 use BlitzPHP\Traits\SingletonTrait;
@@ -20,6 +21,7 @@ class Payment
 	const FLUTTERWAVE = 'flutterwave';
 	const MONETBIL = 'monetbil';
 	const TRANZAK = 'tranzak';
+	const SIMPLEPAY = 'simplepay';
 
 	private ?BaseProvider $provider = null;
 
@@ -111,6 +113,7 @@ class Payment
 		$this->provider = match ($this->service) {
 			self::FLUTTERWAVE => new Flutterwave(),
 			self::TRANZAK     => new Tranzak(),
+			self::SIMPLEPAY   => new SimplePay(),
 			default           => new Monetbil(),
 		};
 
