@@ -24,14 +24,20 @@
                 dans votre compte MS.
             </p>
             <hr/><br/>
-            <?php $method = 'get'; if (isset($service) && $service === \App\MS\Payment::MONETBIL) { 
-                $method = 'post'; ?>
+            <?php if (isset($service) && $service === \App\MS\Payment::MONETBIL): ?>
                 <script type="text/javascript" src="https://fr.monetbil.com/widget/v2/monetbil.min.js"></script>
-            <?php } ?>
-            <?php if (isset($service) && $service === \App\MS\Payment::TRANZAK) : ?>
+                <form method="post" action="<?= $payment ?>" data-monetbil="form">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Recharger maintenant</button>
+                </form>
+            <?php elseif (isset($service) && $service === \App\MS\Payment::TRANZAK) : ?>
                 <a role="button" href="<?= $payment ?>" class="btn btn-primary btn-lg btn-block">Recharger maintenant</a>
+            <?php elseif (isset($service) && $service === \App\MS\Payment::SIMPLEPAY) : ?>
+                <script type="text/javascript" src="https://api.simple-pay.net/widget/simple-pay.min.js"></script>
+                <form method="get" action="<?= $payment ?>" data-simple-pay="widget">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Recharger maintenant</button>
+                </form>
             <?php else: ?>
-                <form method="<?= $method ?>" action="<?= $payment ?>" data-monetbil="form">
+                <form method="get" action="<?= $payment ?>" data-monetbil="form">
                     <button type="submit" class="btn btn-primary btn-lg btn-block">Recharger maintenant</button>
                 </form>
             <?php endif; ?>

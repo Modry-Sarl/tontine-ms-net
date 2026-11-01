@@ -76,7 +76,7 @@ class TransactionsController extends AppController
                 $retrait->user->decrement('solde_' . $retrait->compte, $retrait->montant);
                 
                 $montant = to_cfa($retrait->montant);
-                $sender = Payment::service(Payment::TRANZAK)->send([
+                $sender = Payment::service(Payment::DEFAULT_PROVIDER)->send([
                     'amount' => $montant - ($montant * 0.05),
                     'phone'  => simple_tel($retrait->tel),
                     'username'  => $retrait->user->user->username,

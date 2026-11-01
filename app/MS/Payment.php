@@ -22,6 +22,7 @@ class Payment
 	const MONETBIL = 'monetbil';
 	const TRANZAK = 'tranzak';
 	const SIMPLEPAY = 'simplepay';
+	const DEFAULT_PROVIDER = self::SIMPLEPAY;
 
 	private ?BaseProvider $provider = null;
 

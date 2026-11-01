@@ -11,7 +11,7 @@ use BlitzPHP\Contracts\Http\StatusCode;
 class PaymentController extends AppController
 {
     /**
-     * Cette route est appelé par monetbil quand tout est ok
+     * Cette route est appelé par les fournisseurs de paiement quand tout est ok
      * Elle permet donc de mettre a jour le solde du membre en cas de succes
      * 
      * @param string $ref Reference de paiement
@@ -20,9 +20,9 @@ class PaymentController extends AppController
      */
     public function notify($ref)
     {
-        $service = $this->request->query('service', Payment::MONETBIL);
+        $service = $this->request->query('service', Payment::DEFAULT_PROVIDER);
         $id_transaction = $service === Payment::SIMPLEPAY
-            ? $this->request->input('data.ref') ?? $this->request->input('ref')
+            ? $this->request->transaction_ref
             : ($this->request->transaction_id ?? $this->request->requestId);
 
         if (empty($id_transaction)) {

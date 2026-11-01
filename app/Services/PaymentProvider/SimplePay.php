@@ -20,6 +20,14 @@ class SimplePay extends BaseProvider
 			'cancel_url'  => link_to('recharge', ['service' => 'simplepay', 'merchant_ref' => $ref]),
 			'notify_url'  => link_to('payment.notify', $ref, ['service' => 'simplepay']),
 			'method'      => 'mobile_money',
+			'customization' => [
+				'title' => config('app.name'),
+				'description' => 'Recharge de compte Virmo Cash',
+				'logo' => img_url('logo/logo-mini.jpg'),
+				'locale' => 'fr',
+				'theme' => 'light',
+				'primary_color' => '#d49e1e',
+			],
 		]);
 
 		if (empty($response['payment_link'])) {
@@ -43,26 +51,30 @@ class SimplePay extends BaseProvider
 
 	protected function getTransactionDetails(object $td): array
 	{
-		$operator = $td->operator ?? '';
+		$rawOperator = $td->operator ?? '';
+		$operator = is_array($rawOperator)
+			? ($rawOperator['code'] ?? $rawOperator['name'] ?? '')
+			: (is_object($rawOperator) ? ($rawOperator->code ?? $rawOperator->name ?? '') : (string) $rawOperator);
 		$status = $td->status ?? '';
+		$payer = (array) ($td->payer ?? []);
 
 		return [
-			'phone'                   => $td->phone ?? $td->recipient ?? '',
+			'phone'                   => $td->phone ?? $td->recipient ?? ($payer['phone'] ?? $payer['msisdn'] ?? ''),
 			'indicatif'               => '',
 			'country'                 => '',
 			'amount'                  => $td->amount ?? 0,
-			'fee'                     => $td->fees ?? 0,
+			'fee'                     => $td->fees ?? $td->fee ?? 0,
 			'status'                  => (int) ($status === 'success'),
 			'message'                 => $td->reason ?? $td->message ?? '',
-			'date'                    => $td->completed_at ?? $td->created_at ?? null,
-			'transaction_id'          => $td->ref ?? '',
+			'date'                    => $td->completed_at ?? $td->updated_at ?? $td->created_at ?? null,
+			'transaction_id'          => $td->ref ?? $td->transaction_ref ?? '',
 			'payment_method'          => match ($operator) {
 				'orange_money' => 'OM',
 				'mtn_momo'     => 'MOMO',
 				default        => '',
 			},
 			'operator'                => $operator,
-			'operator_transaction_id' => $td->transfer_id ?? $td->order_id ?? $td->internal_ref ?? '',
+			'operator_transaction_id' => $td->operator_transaction_id ?? $td->transfer_id ?? $td->order_id ?? $td->internal_ref ?? '',
 		];
 	}
 
@@ -125,8 +137,8 @@ class SimplePay extends BaseProvider
 		}
 
 		$response = match ($method) {
-			'GET'  => $client->get($uri),
-			'POST' => $client->post($uri, $data),
+			'GET'  => $client->bodyFormat('none')->get($uri, $data),
+			'POST' => $client->asJson()->post($uri, $data),
 			default => throw new RuntimeException('Méthode HTTP SimplePay non prise en charge.'),
 		};
 
@@ -150,7 +162,7 @@ class SimplePay extends BaseProvider
 		return Services::httpclient()
 			->withToken($this->getAccessToken())
 			->baseUrl($this->baseUrl)
-			->asJson();
+			->acceptJson();
 	}
 
 	private function getAccessToken(): string
@@ -161,6 +173,7 @@ class SimplePay extends BaseProvider
 
 		$appCode = env('SIMPLEPAY.APPCODE');
 		$apiKey = env('SIMPLEPAY.API_KEY');
+
 		if (empty($appCode) || empty($apiKey)) {
 			throw new RuntimeException('Les identifiants SimplePay ne sont pas configurés.');
 		}
@@ -168,7 +181,8 @@ class SimplePay extends BaseProvider
 		$response = Services::httpclient()
 			->baseUrl($this->baseUrl)
 			->asJson()
-			->post('v1/auth/', ['appcode' => $appCode, 'key' => $apiKey]);
+			->post('v1/auth', ['appcode' => $appCode, 'key' => $apiKey]);
+
 		$result = $response->json();
 
 		if ($response->failed() || ! is_array($result) || empty($result['token'])) {

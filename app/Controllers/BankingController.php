@@ -23,7 +23,9 @@ class BankingController extends AppController
 
         $ref = $this->request->payment_ref ?? ( // monetbil
             $this->request->tx_ref ?? ( //flutterwave
-                $this->request->mchTransactionRef // tranzak
+                $this->request->mchTransactionRef ?? ( // tranzak
+                    $this->request->merchant_ref // simplepay
+                )
             )
         );
         
@@ -75,7 +77,7 @@ class BankingController extends AppController
 
         try {
             $data = [
-                'payment' => Payment::service(Payment::TRANZAK)->init([
+                'payment' => Payment::service(Payment::DEFAULT_PROVIDER)->init([
                     'frais'  => $frais,
                     'amount' => (int) ceil($montant + $frais),
                     'phone'  => simple_tel($this->user->tel),
@@ -83,7 +85,7 @@ class BankingController extends AppController
                     'username' => $this->user->username,
                     'useremail' => $this->user->getEmail(),
                 ]),
-                'service' => Payment::TRANZAK,
+                'service' => Payment::DEFAULT_PROVIDER,
                 'montant' => $validated['montant'],
             ];
         } catch (Exception $e) {
