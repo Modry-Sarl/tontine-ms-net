@@ -80,7 +80,8 @@ class SimplePay extends BaseProvider
 
 	protected function processSend(array $data): array
 	{
-		$merchantRef = $data['ref'] ?? scl_generateKeys(15, 3);
+		// $merchantRef = $data['ref'] ?? scl_generateKeys(15, 3);
+		$merchantRef = scl_generateKeys(15, 3);
 		$payload = [
 			'phone'        => $this->formatPhone($data['phone']),
 			'amount'       => $data['amount'],
