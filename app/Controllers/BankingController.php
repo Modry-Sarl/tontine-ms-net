@@ -41,10 +41,18 @@ class BankingController extends AppController
             Payment::removeRef($ref);
         }
         else if (in_array($data['status'], ['success', 'successful'])) {
-            /** @var PaymentController $controller */
-            $controller = Services::factory(PaymentController::class);
-            $controller->initialize($this->request, $this->response, $this->logger);
-            $controller->notify($ref);
+            $service = $this->request->query('service', Payment::DEFAULT_PROVIDER);
+            if ($service === Payment::SIMPLEPAY) {
+                /** @var WebhookController $webhookController */
+                $webhookController = Services::factory(WebhookController::class);
+                $webhookController->initialize($this->request, $this->response, $this->logger);
+                $webhookController->verifyAndProcessCollect((string) $ref, $this->request->ref ?? $this->request->transaction_ref);
+            } else {
+                /** @var PaymentController $controller */
+                $controller = Services::factory(PaymentController::class);
+                $controller->initialize($this->request, $this->response, $this->logger);
+                $controller->notify($ref);
+            }
 
             return redirect()->route('recharge')->with('success', 'Recharge effectuée avec succès');
         }
@@ -84,6 +92,8 @@ class BankingController extends AppController
                     'user'   => $this->user->utilisateur->id,
                     'username' => $this->user->username,
                     'useremail' => $this->user->getEmail(),
+                    'ip'        => $this->request->clientIp(),
+                    'ua'        => $this->request->userAgent(),
                 ]),
                 'service' => Payment::DEFAULT_PROVIDER,
                 'montant' => $validated['montant'],

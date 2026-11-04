@@ -3,13 +3,14 @@
 namespace App\Entities;
 
 use App\MS\App;
+use App\MS\Payment;
 use BlitzPHP\Wolke\Model;
 
 class Retrait extends Model
 {
     protected array $fillable = [
         'ref', 'user_id', 'tel', 
-        'compte', 'montant', 'meta', 
+        'compte', 'montant', 'service', 'meta', 
         'statut', 'process_at', 'process_by', 'rejected_reason',
     ];
     protected array $casts = [
@@ -30,6 +31,7 @@ class Retrait extends Model
             'tel'     => simple_tel($data['tel']),
             'montant' => (float) $data['montant'],
             'compte'  => $data['compte'],
+            'service' => $data['service'] ?? Payment::DEFAULT_PROVIDER,
             'meta'    => (array) ($data['meta'] ?? []),
         ]);
 

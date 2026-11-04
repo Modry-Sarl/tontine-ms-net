@@ -75,42 +75,61 @@ class TransactionsController extends AppController
 
                 $retrait->user->decrement('solde_' . $retrait->compte, $retrait->montant);
                 
-                $montant = to_cfa($retrait->montant);
-                $sender = Payment::service(Payment::DEFAULT_PROVIDER)->send([
-                    'amount' => $montant - ($montant * 0.05),
-                    'phone'  => simple_tel($retrait->tel),
-                    'username'  => $retrait->user->user->username,
+                $montant  = to_cfa($retrait->montant);
+                $provider = Payment::DEFAULT_PROVIDER;
+                $sender   = Payment::service($provider)->send([
+                    'ref'      => $retrait->ref,
+                    'amount'   => $montant - ($montant * 0.05),
+                    'phone'    => simple_tel($retrait->tel),
+                    'username' => $retrait->user->user->username,
                 ], $retrait->meta['use_eum'] ?? false);
                 
+                $status  = strtoupper((string) ($sender['status'] ?? ''));
                 $success = (isset($sender['success']) && $sender['success'] == true) 
-                    || (isset($sender['status']) && $sender['status'] == 'SUCCESSFUL');
+                    || in_array($status, ['SUCCESSFUL', 'PROCESSING'], true);
                     
                 if (! $success) {
                    throw new Exception('[' . (($sender ?? [])['message'] ?? ''). ']');
                 }
+
+                $meta                            = (array) ($retrait->meta ?? []);
+                $meta['debited']                 = true;
+                $meta['amount_cfa']              = $sender['amount'] ?? ($montant - ($montant * 0.05));
+                $meta['payment_ref']             = $sender['reference'] ?? '';
+                $meta['operator_transaction_id'] = $sender['operator_transaction_id'] ?? '';
+                $retrait->meta                   = $meta;
+                $retrait->service                = $provider;
                 
-                Transaction::create([
-                    'user_id'                 => $retrait->user_id,
-                    'numero'                  => substr($sender['phonenumber'], 3, 9),
-                    'montant'                 => to_dollar($sender['amount'] ?? $montant),
-                    'frais'                   => 0,
-                    'type'                    => 'sortie',
-                    'statut'                  => in_array($sender['success'], ['1', 1, true]),
-                    'message'                 => $sender['message'],
-                    'operateur'               => $sender['operator'] ?? '',
-                    'operator_transaction_id' => $sender['operator_transaction_id'],
-                    'ip'                      => $retrait->meta['ip'] ?? $this->request->clientIp(),
-                    'ua'                      => $retrait->meta['ua'] ?? $this->request->userAgent(),
-                    'dt'                      => $retrait->meta['dt'] ?? date('Y-m-d H:i:s'),
-                ]);
+                // Pour SimplePay, la création de la Transaction (sur withdrawal.completed)
+                // ou le remboursement + rejet (sur withdrawal.failed) est centralisé dans WebhookController
+                if ($provider !== Payment::SIMPLEPAY) {
+                    Transaction::create([
+                        'user_id'                 => $retrait->user_id,
+                        'numero'                  => substr($sender['phonenumber'], 3, 9),
+                        'ref'                     => $retrait->ref,
+                        'montant'                 => to_dollar($sender['amount'] ?? $montant),
+                        'frais'                   => 0,
+                        'type'                    => 'sortie',
+                        'statut'                  => in_array($sender['success'], ['1', 1, true]),
+                        'message'                 => mb_substr((string) ($sender['message'] ?? ''), 0, 25),
+                        'operateur'               => $sender['operator'] ?? '',
+                        'reference'               => $sender['reference'] ?? '',
+                        'operator_transaction_id' => $sender['operator_transaction_id'] ?? '',
+                        'ip'                      => $retrait->meta['ip'] ?? $this->request->clientIp(),
+                        'ua'                      => $retrait->meta['ua'] ?? $this->request->userAgent(),
+                        'dt'                      => $retrait->meta['dt'] ?? date('Y-m-d H:i:s'),
+                    ]);
+                }
             }
         
             update_retrait: 
             $retrait->update([
+                'service'         => $retrait->service ?? Payment::DEFAULT_PROVIDER,
                 'statut'          => $validated['action'],
                 'process_at'      => date('Y-m-d H:i:s'),
                 'process_by'      => $this->user->utilisateur->id,
                 'rejected_reason' => $rejected_reason ?? null,
+                'meta'            => $retrait->meta,
             ]);
 
             $db->commit();

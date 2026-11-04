@@ -18,7 +18,7 @@ class SimplePay extends BaseProvider
 			'merchant_ref' => $ref,
 			'return_url'  => link_to('recharge', ['service' => 'simplepay', 'merchant_ref' => $ref]),
 			'cancel_url'  => link_to('recharge', ['service' => 'simplepay', 'merchant_ref' => $ref]),
-			'notify_url'  => link_to('payment.notify', $ref, ['service' => 'simplepay']),
+			'notify_url'  => link_to('webhook.simplepay'),
 			'method'      => 'mobile_money',
 			'customization' => [
 				'title' => config('app.name'),
@@ -88,6 +88,7 @@ class SimplePay extends BaseProvider
 			'merchant_ref' => $merchantRef,
 			// 'name'         => $data['username'] ?? '',
 			'description'  => 'Paiement Virmo Cash',
+			'notify_url'   => link_to('webhook.simplepay'),
 		];
 
 		if (! empty($data['operator'])) {
@@ -101,26 +102,17 @@ class SimplePay extends BaseProvider
 			throw new RuntimeException('SimplePay n\'a pas retourné la référence du transfert.');
 		}
 
-		$status = $response['status'] ?? '';
-		for ($attempt = 0; $status === 'processing' && $attempt < 10; $attempt++) {
-			sleep(3);
-			$statusResponse = $this->request(
-				'GET',
-				'v1/payment/transaction/' . rawurlencode($ref) . '/status'
-			);
-			$status = $statusResponse['status'] ?? '';
-			$response = array_merge($response, $statusResponse);
-		}
-
-		$success = $status === 'success';
+		$status = strtolower((string) ($response['status'] ?? ''));
+		$success = in_array($status, ['success', 'processing'], true);
 
 		return [
 			'success'                 => $success,
-			'status'                  => $success ? 'SUCCESSFUL' : strtoupper($status ?: 'FAILED'),
+			'status'                  => $status === 'success' ? 'SUCCESSFUL' : strtoupper($status ?: 'FAILED'),
 			'message'                 => $response['reason'] ?? $response['message'] ?? $status,
 			'phonenumber'             => $response['recipient'] ?? $payload['phone'],
 			'amount'                  => $response['amount'] ?? $payload['amount'],
 			'operator'                => $response['operator'] ?? $payload['operator'] ?? '',
+			'reference'               => $ref,
 			'operator_transaction_id' => $response['transfer_id'] ?? $ref,
 		];
 	}

@@ -11,7 +11,7 @@ use BlitzPHP\Contracts\Http\StatusCode;
 class PaymentController extends AppController
 {
     /**
-     * Cette route est appelé par les fournisseurs de paiement quand tout est ok
+     * Cette route est appelé par les fournisseurs de paiement (Monetbil, Tranzak, Flutterwave) quand tout est ok
      * Elle permet donc de mettre a jour le solde du membre en cas de succes
      * 
      * @param string $ref Reference de paiement
@@ -20,10 +20,8 @@ class PaymentController extends AppController
      */
     public function notify($ref)
     {
-        $service = $this->request->query('service', Payment::DEFAULT_PROVIDER);
-        $id_transaction = $service === Payment::SIMPLEPAY
-            ? $this->request->transaction_ref
-            : ($this->request->transaction_id ?? $this->request->requestId);
+        $service        = $this->request->query('service', Payment::MONETBIL);
+        $id_transaction = $this->request->transaction_id ?? $this->request->requestId;
 
         if (empty($id_transaction)) {
             return $this->response->withStatus(StatusCode::GONE);
@@ -59,9 +57,9 @@ class PaymentController extends AppController
             'frais'                   => to_dollar($payement['frais'], 'entree'),
             'type'                    => 'entree',
             'statut'                  => $status ?: $details['status'],
-            'message'                 => $details['message'],
+            'message'                 => mb_substr((string) ($details['message'] ?? ''), 0, 25),
             'operateur'               => $details['operator'],
-            'referencee'              => $details['transaction_id'],
+            'reference'               => $details['transaction_id'],
             'operator_transaction_id' => $details['operator_transaction_id'],
             'ip'                      => $this->request->clientIp(),
             'ua'                      => $this->request->userAgent(),

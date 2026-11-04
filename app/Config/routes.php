@@ -15,6 +15,7 @@ use App\Controllers\AdminerController;
 use App\Controllers\BankingController;
 use App\Controllers\PaymentController;
 use App\Controllers\RegisterController;
+use App\Controllers\WebhookController;
 use BlitzPHP\Facades\Route;
 
 /**
@@ -36,6 +37,10 @@ Route::name('logout')->delete('/logout', 'AuthController::logout');
 
 Route::prefix('payment')->controller(PaymentController::class)->group(function() {
     Route::name('payment.notify')->match(['get', 'post'], '/notify/(:any)', 'notify/$1');
+});
+
+Route::prefix('webhook')->controller(WebhookController::class)->group(function() {
+    Route::name('webhook.simplepay')->post('/simplepay', 'simplepay');
 });
 
 Route::middleware('session')->group(function() {    
