@@ -19,10 +19,10 @@ class TransactionsController extends AppController
      */
     public function formApprobations()
     {
-        $paymentInstance = Payment::service(Payment::TRANZAK);
+        // $paymentInstance = Payment::service(Payment::TRANZAK);
 
-        $data['solde_collecte'] = $paymentInstance->tranzakAccountBalance('collection');
-        $data['solde_paiement'] = $paymentInstance->tranzakAccountBalance('payout');
+        // $data['solde_collecte'] = $paymentInstance->tranzakAccountBalance('collection');
+        // $data['solde_paiement'] = $paymentInstance->tranzakAccountBalance('payout');
 
         $data['tab'] = $statut = $this->request->string('tab', 'pending');
 

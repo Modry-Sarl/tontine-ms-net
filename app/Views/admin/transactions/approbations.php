@@ -23,7 +23,7 @@
                     href="<?= current_url(true)->setQueryArray(['tab' => 'massive']) ?>">Retraits en masse</a>
             </li>
         </ul>
-        <div class="row align-items-center">
+        <!-- <div class="row align-items-center">
             <div class="col-lg-4 col-md-6">
                 <div class="card card-primary border-primary">
                     <div class="card-body px-3">
@@ -36,8 +36,8 @@
                                     <div class="">
                                         <span class="d-inline-block w-100">Solde du compte de collecte</span>
                                         <div class="mt-3 d-flex align-items-center h4 font-weight-bold text-warning">
-                                            <span class="pr-2 border-right"><?= number_format(to_dollar($solde_collecte, 'entree'), 3, '.', ' ') ?> $</span>
-                                            <span class="pl-2 text-left"><?= number_format($solde_collecte, 0, '.', ' ') ?> F</span>
+                                            <span class="pr-2 border-right">< ?= number_format(to_dollar($solde_collecte, 'entree'), 3, '.', ' ') ?> $</span>
+                                            <span class="pl-2 text-left">< ?= number_format($solde_collecte, 0, '.', ' ') ?> F</span>
                                         </div>
                                     </div>
                                 </div>
@@ -61,8 +61,8 @@
                                     <div class="">
                                         <span class="d-inline-block w-100">Solde du compte de paiement</span>
                                         <div class="mt-3 d-flex align-items-center h4 font-weight-bold text-warning">
-                                            <span class="pr-2 border-right"><?= number_format(to_dollar($solde_paiement, 'sortie'), 3, '.', ' ') ?> $</span>
-                                            <span class="pl-2 text-left"><?= number_format($solde_paiement, 0, '.', ' ') ?> F</span>
+                                            <span class="pr-2 border-right">< ?= number_format(to_dollar($solde_paiement, 'sortie'), 3, '.', ' ') ?> $</span>
+                                            <span class="pl-2 text-left">< ?= number_format($solde_paiement, 0, '.', ' ') ?> F</span>
                                         </div>
                                     </div>
                                 </div>               
@@ -80,7 +80,7 @@
                     <button type="submit" class="btn btn-primary btn-lg btn-block">Transférer les fond <br />vers le compte de paiement</button>
                 </form>
             </div>
-        </div>
+        </div> -->
     </div>
     <div class="card-body">
         <?php if ($errors->count()) : ?>
